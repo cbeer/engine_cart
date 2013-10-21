@@ -36,9 +36,10 @@ In your rake tasks, you can require the test app get build first:
 
 And in your e.g. spec_helper:
 
+```ruby
   require 'engine_cart'
   EngineCart.load_application!
-
+```
 
 ## Contributing
 
