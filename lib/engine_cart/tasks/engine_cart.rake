@@ -44,9 +44,9 @@ def current_engine_name
 end
 
 def within_test_app
-  FileUtils.cd(TEST_APP)
-  Bundler.with_clean_env do
-    yield
+  Dir.chdir(TEST_APP) do
+    Bundler.with_clean_env do
+      yield
+    end
   end
-  FileUtils.cd(APP_ROOT)
 end
