@@ -19,27 +19,37 @@ Or install it yourself as:
 
 ## Usage
 
-Add this to your Rakefile:
+In your Rakefile you can generate the Rails application using, e.g.:
 
-    # Path to the test app
-    # TEST_APP = 'spec/internal'
-    # Path to files to include in the test app
-    # TEST_APP_TEMPLATES = 'spec/test_app_templates'
+```ruby
     require 'engine_cart/rake_task'
-
-In your rake tasks, you can require the test app get build first:
 
     task :ci => ['engine_cart:generate'] do
       # run the tests
     end
+```
 
-
-And in your e.g. spec_helper:
+And in your e.g. spec_helper.rb, initialize EngineCart:
 
 ```ruby
-  require 'engine_cart'
   EngineCart.load_application!
 ```
+
+## Configuration
+
+You can configure where the test app is created by setting the `TEST_APP` constant, e.g.:
+
+```ruby
+  TEST_APP = "/tmp/generate-the-test-app-into-tmp-instead-of-your-app
+```
+
+You can also inject additional gems, or run other Rails generators by adding files to the `TEST_APP_TEMPLATES` directory.
+
+Gemfile.extra
+
+test_app generator
+
+within_test_app
 
 ## Contributing
 
