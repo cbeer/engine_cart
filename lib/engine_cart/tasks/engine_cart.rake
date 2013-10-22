@@ -1,5 +1,6 @@
 namespace :engine_cart do
 
+  desc "Prepare a gem for using engine_cart"
   task :prepare do
     require 'generators/engine_cart/engine_cart_generator'
     generator = EngineCartGenerator.new
@@ -18,25 +19,32 @@ namespace :engine_cart do
     `rm -rf #{TEST_APP}`
   end
 
-  desc "Create the test rails app"
-  task :generate => [:setup] do
+  task :create_test_rails_app => [:setup] do
+    system "rails new #{TEST_APP}"
+  end
 
-    unless File.exists? File.expand_path('Rakefile', TEST_APP)
-      # Create a new test rails app
-      system "rails new #{TEST_APP}"
+  task :inject_gemfile_extras => [:setup] do
+    # Add our gem and extras to the generated Rails app
+    open(File.expand_path('Gemfile', TEST_APP), 'a') do |f|
+      gemfile_extras_path = File.expand_path("Gemfile.extra", TEST_APP_TEMPLATES)
 
-      # Add our gem and extras to the generated Rails app
-      open(File.expand_path('Gemfile', TEST_APP), 'a') do |f|
-        gemfile_extras_path = File.expand_path("Gemfile.extra", TEST_APP_TEMPLATES)
-
-        f.write <<-EOF
-        gem '#{current_engine_name}', :path => '../../'
+      f.write <<-EOF
+        gem '#{current_engine_name}', :path => '#{File.expand_path('.')}'
 
         if File.exists?("#{gemfile_extras_path}")
           eval File.read("#{gemfile_extras_path}"), nil, "#{gemfile_extras_path}"
         end
 EOF
-      end
+    end
+  end
+
+  desc "Create the test rails app"
+  task :generate => [:setup] do
+
+    unless File.exists? File.expand_path('Rakefile', TEST_APP)
+      # Create a new test rails app
+      Rake::Task['engine_cart:create_test_rails_app'].invoke
+      Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
       # Copy our test app generators into the app and prepare it
       system "cp -r #{TEST_APP_TEMPLATES}/lib/generators #{TEST_APP}/lib"

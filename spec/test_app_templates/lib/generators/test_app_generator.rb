@@ -1,14 +1,7 @@
-require 'rails/generators'
-require 'fileutils'
+      require 'rails/generators'
 
-class TestAppGenerator < Rails::Generators::Base
+      class TestAppGenerator < Rails::Generators::Base
+        source_root "spec/test_app_templates"
 
-  def create_a_dummy_git_and_gitignore_in_the_test_app
-    system('git init')
-    FileUtils.touch('.gitignore')
-  end
+      end
 
-  def generate_engine_cart_test_app
-    generate 'engine_cart'
-  end
-end
