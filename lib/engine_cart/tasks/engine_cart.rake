@@ -15,7 +15,20 @@ namespace :engine_cart do
   task :generate => [:setup] do
 
     unless File.exists? File.expand_path('Rakefile', TEST_APP)
+      # Create a new test rails app
       system "rails new #{TEST_APP}"
+
+      # Ignore the generated test app in the gem's .gitignore file
+      # (if it exists, and the test app isn't already ignored)
+      git_root = (`git rev-parse --show-toplevel` rescue '.').strip
+
+      open(File.expand_path('.gitignore', git_root), 'a') do |f|
+        f.write <<-EOF
+          #{TEST_APP}
+        EOF
+      end if File.exists?(File.expand_path('.gitignore', git_root)) and !(system('git', 'check-ignore', TEST_APP) rescue false)
+
+      # Add our gem and extras to the generated Rails app
       open(File.expand_path('Gemfile', TEST_APP), 'a') do |f|
         gemfile_extras_path = File.expand_path("Gemfile.extra", TEST_APP_TEMPLATES)
 
@@ -28,6 +41,7 @@ namespace :engine_cart do
 EOF
       end
 
+      # Copy our test app generators into the app and prepare it
       system "cp -r #{TEST_APP_TEMPLATES}/lib/generators #{TEST_APP}/lib"
       within_test_app do
         system "bundle install"
