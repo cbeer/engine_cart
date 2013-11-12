@@ -59,7 +59,7 @@ EOF
 end
 
 def current_engine_name
-  File.basename(Dir.glob("*.gemspec").first, '.gemspec')
+  ENV["CURRENT_ENGINE_NAME"] || File.basename(Dir.glob("*.gemspec").first, '.gemspec')
 end
 
 def within_test_app
