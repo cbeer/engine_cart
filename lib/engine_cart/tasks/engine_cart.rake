@@ -20,7 +20,15 @@ namespace :engine_cart do
   end
 
   task :create_test_rails_app => [:setup] do
-    system "rails new #{TEST_APP}"
+    require 'fileutils'
+    Dir.mktmpdir do |dir|
+      Dir.chdir dir do
+        system "rails new internal"
+      end
+
+      FileUtils.move "#{dir}/internal", "#{TEST_APP}"
+
+    end
   end
 
   task :inject_gemfile_extras => [:setup] do
