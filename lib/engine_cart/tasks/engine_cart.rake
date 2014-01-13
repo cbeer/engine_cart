@@ -23,7 +23,12 @@ namespace :engine_cart do
     require 'fileutils'
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
-        system "rails new internal"
+        Bundler.with_clean_env do
+          `rails new internal`
+        end
+        unless $?
+          raise "Error generating new rails app. Aborting."
+        end
       end
 
       FileUtils.move "#{dir}/internal", "#{TEST_APP}"
