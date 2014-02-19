@@ -24,9 +24,12 @@ namespace :engine_cart do
     require 'rails'
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
-        version = Rails.version
+        version = if Gem.loaded_specs["rails"]
+          "_#{Gem.loaded_specs["rails"].version}_"
+        end
+
         Bundler.with_clean_env do
-          `rails _#{version}_ new internal`
+          `rails #{version} new internal`
         end
         unless $?
           raise "Error generating new rails app. Aborting."
