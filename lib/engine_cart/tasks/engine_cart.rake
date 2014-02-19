@@ -21,10 +21,10 @@ namespace :engine_cart do
 
   task :create_test_rails_app => [:setup] do
     require 'fileutils'
-    require 'rails/version'
+    require 'rails'
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
-        version = Rails::VERSION::STRING
+        version = Rails.version
         Bundler.with_clean_env do
           `rails _#{version}_ new internal`
         end
