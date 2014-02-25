@@ -21,7 +21,6 @@ namespace :engine_cart do
 
   task :create_test_rails_app => [:setup] do
     require 'fileutils'
-    require 'rails'
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
         version = if Gem.loaded_specs["rails"]
