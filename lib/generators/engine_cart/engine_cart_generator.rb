@@ -6,9 +6,6 @@ require 'rails/generators'
 class EngineCartGenerator < Rails::Generators::Base
   def create_test_app_templates
     empty_directory EngineCart.templates_path
-    create_file File.expand_path("Gemfile.extra", EngineCart.templates_path), :skip => true do
-      "# extra gems (e.g. development dependencies) for the test app go here"
-    end
 
     empty_directory File.expand_path("lib/generators", EngineCart.templates_path)
 
@@ -41,5 +38,17 @@ class EngineCartGenerator < Rails::Generators::Base
     append_file  File.expand_path('.gitignore', git_root) do 
       "#{EngineCart.destination}\n"
     end 
+  end
+
+  def add_gemfile_include
+    append_file "Gemfile" do
+      <<-EOF
+file = File.expand_path("Gemfile", ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || File.expand_path("../spec/internal", __FILE__))
+if File.exists?(file)
+  puts "Loading \#{file} ..." if $DEBUG # `ruby -d` or `bundle -v`
+  instance_eval File.read(file)
+end
+      EOF
+    end
   end
 end

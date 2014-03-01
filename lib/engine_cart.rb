@@ -25,7 +25,7 @@ module EngineCart
   end
 
   self.engine_name = ENV["CURRENT_ENGINE_NAME"]
-  self.destination = ENV['ENGINE_CART_DESTINATION'] || "./spec/internal"
+  self.destination = ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || "./spec/internal"
   self.template = ENV["ENGINE_CART_TEMPLATE"] || (File.expand_path('template.rb') if File.exists? 'template.rb')
   self.templates_path = ENV['ENGINE_CART_TEMPLATES_PATH'] || "./spec/test_app_templates"
 
@@ -34,7 +34,7 @@ module EngineCart
   end
 
   def self.load_application! path = nil
-    require File.expand_path("config/environment", path || ENV['RAILS_ROOT'] || EngineCart.destination)
+    require File.expand_path("config/environment", path || EngineCart.destination)
   end
 
   def self.within_test_app

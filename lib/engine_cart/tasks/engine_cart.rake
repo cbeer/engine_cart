@@ -8,6 +8,7 @@ namespace :engine_cart do
     generator = EngineCartGenerator.new
     generator.create_test_app_templates
     generator.ignore_test_app
+    generator.add_gemfile_include
   end
 
   task :setup do
@@ -48,10 +49,6 @@ namespace :engine_cart do
 
       f.write <<-EOF
         gem '#{EngineCart.current_engine_name}', :path => '#{File.expand_path('.')}'
-
-        if File.exists?("#{gemfile_extras_path}")
-          eval File.read("#{gemfile_extras_path}"), nil, "#{gemfile_extras_path}"
-        end
 EOF
     end
   end
@@ -62,6 +59,9 @@ EOF
 
     # Create a new test rails app
     Rake::Task['engine_cart:create_test_rails_app'].invoke
+
+    system "bundle install"
+
     Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
     # Copy our test app generators into the app and prepare it
