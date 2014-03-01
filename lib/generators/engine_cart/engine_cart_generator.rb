@@ -1,23 +1,20 @@
 require 'rails/generators'
 
 class EngineCartGenerator < Rails::Generators::Base
-  TEST_APP_TEMPLATES = 'spec/test_app_templates' unless defined? TEST_APP_TEMPLATES
-  TEST_APP = 'spec/internal' unless defined? TEST_APP
-
   def create_test_app_templates
-    empty_directory TEST_APP_TEMPLATES
-    create_file File.expand_path("Gemfile.extra", TEST_APP_TEMPLATES), :skip => true do
+    empty_directory EngineCart.templates_path
+    create_file File.expand_path("Gemfile.extra", EngineCart.templates_path), :skip => true do
       "# extra gems to load into the test app go here"
     end
 
-    empty_directory File.expand_path("lib/generators", TEST_APP_TEMPLATES)
+    empty_directory File.expand_path("lib/generators", EngineCart.templates_path)
 
-    create_file File.expand_path("lib/generators/test_app_generator.rb", TEST_APP_TEMPLATES), :skip => true do
+    create_file File.expand_path("lib/generators/test_app_generator.rb", EngineCart.templates_path), :skip => true do
       <<-EOF
       require 'rails/generators'
 
       class TestAppGenerator < Rails::Generators::Base
-        source_root "#{TEST_APP_TEMPLATES}"
+        source_root "#{EngineCart.templates_path}"
 
       end
 
@@ -36,7 +33,7 @@ class EngineCartGenerator < Rails::Generators::Base
     return if (system('git', 'check-ignore', TEST_APP, '-q') rescue false)
 
     append_file  File.expand_path('.gitignore', git_root) do 
-      "#{TEST_APP}\n"
+      "#{EngineCart.destination}\n"
     end 
   end
 end
