@@ -4,12 +4,14 @@ module EngineCart
   require "engine_cart/engine" if defined? Rails
 
   class << self
+    attr_accessor :template
     attr_accessor :templates_path
     attr_accessor :destination
     attr_accessor :engine_name
   end
 
   self.engine_name = ENV["CURRENT_ENGINE_NAME"]
+  self.template = ENV["ENGINE_CART_TEMPLATE"] || (File.expand_path('template.rb') if File.exists? 'template.rb')
   self.destination = ENV['ENGINE_CART_DESTINATION'] || "./spec/internal"
   self.templates_path = ENV['ENGINE_CART_TEMPLATES_PATH'] || "./spec/test_app_templates"
 

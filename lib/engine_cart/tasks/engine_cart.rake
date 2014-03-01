@@ -28,7 +28,7 @@ namespace :engine_cart do
         end
 
         Bundler.with_clean_env do
-          `rails #{version} new internal`
+          `rails #{version} new internal #{"-m #{EngineCart.template}" if EngineCart.template}`
         end
 
         unless $?
@@ -65,11 +65,13 @@ EOF
     Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
     # Copy our test app generators into the app and prepare it
-    system "cp -r #{EngineCart.templates_path}/lib/generators #{EngineCart.destination}/lib"
+    if File.exists? "#{EngineCart.templates_path}/lib/generators"
+      system "cp -r #{EngineCart.templates_path}/lib/generators #{EngineCart.destination}/lib"
+    end
 
     within_test_app do
       system "bundle install"
-      system "rails generate test_app"
+      system "(rails g | grep test_app) && rails generate test_app"
       system "rake db:migrate db:test:prepare"
     end
 
