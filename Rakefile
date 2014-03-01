@@ -13,7 +13,7 @@ task :generate_test_gem => ['engine_cart:setup'] do
   system("rails plugin new spec/internal_gem")
   system("mv spec/internal_gem spec/internal")
   Rake::Task['engine_cart:inject_gemfile_extras'].invoke
-  within_test_app do
+  EngineCart.within_test_app do
     system "git init"
     FileUtils.touch('.gitignore')
     Dir.mkdir('spec')

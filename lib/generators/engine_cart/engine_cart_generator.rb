@@ -1,5 +1,8 @@
 require 'rails/generators'
 
+##
+# EngineCartGenerator sets up an engine to 
+# use engine_cart-generated test apps
 class EngineCartGenerator < Rails::Generators::Base
   def create_test_app_templates
     empty_directory EngineCart.templates_path
