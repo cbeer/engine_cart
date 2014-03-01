@@ -4,7 +4,7 @@ class EngineCartGenerator < Rails::Generators::Base
   def create_test_app_templates
     empty_directory EngineCart.templates_path
     create_file File.expand_path("Gemfile.extra", EngineCart.templates_path), :skip => true do
-      "# extra gems to load into the test app go here"
+      "# extra gems (e.g. development dependencies) for the test app go here"
     end
 
     empty_directory File.expand_path("lib/generators", EngineCart.templates_path)
@@ -16,6 +16,9 @@ class EngineCartGenerator < Rails::Generators::Base
       class TestAppGenerator < Rails::Generators::Base
         source_root "#{EngineCart.templates_path}"
 
+        # if you need to generate any additional configuration
+        # into the test app, this generator will be run immediately
+        # after setting up the application
       end
 
       EOF
