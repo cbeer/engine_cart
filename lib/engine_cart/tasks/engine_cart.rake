@@ -1,11 +1,11 @@
 require 'engine_cart'
-require 'generators/engine_cart/engine_cart_generator'
+require 'generators/engine_cart/install_generator'
 
 namespace :engine_cart do
 
   desc "Prepare a gem for using engine_cart"
   task :prepare do
-    generator = EngineCartGenerator.new
+    generator = EngineCart::InstallGenerator.new
     generator.create_test_app_templates
     generator.ignore_test_app
     generator.add_gemfile_include
