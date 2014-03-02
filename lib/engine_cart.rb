@@ -22,12 +22,18 @@ module EngineCart
     # the test app generator
     attr_accessor :templates_path
 
+
+    ##
+    # Additional options when generating a test rails application
+    attr_accessor :rails_options
+
   end
 
   self.engine_name = ENV["CURRENT_ENGINE_NAME"]
   self.destination = ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || "./spec/internal"
   self.template = ENV["ENGINE_CART_TEMPLATE"] || (File.expand_path('template.rb') if File.exists? 'template.rb')
   self.templates_path = ENV['ENGINE_CART_TEMPLATES_PATH'] || "./spec/test_app_templates"
+  self.rails_options = ENV['ENGINE_CART_RAILS_OPTIONS']
 
   def self.current_engine_name
     engine_name || File.basename(Dir.glob("*.gemspec").first, '.gemspec')
