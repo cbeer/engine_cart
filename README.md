@@ -16,17 +16,22 @@ Or install it yourself as:
 
     $ gem install engine_cart
 
-
 ## Usage
+
+Engine Cart comes with a generator to set up your engine to use Engine Cart. It is also packaged as a rake task:
+
+```
+$ rake engine_cart:prepare
+```
 
 In your Rakefile you can generate the Rails application using, e.g.:
 
 ```ruby
-    require 'engine_cart/rake_task'
+require 'engine_cart/rake_task'
 
-    task :ci => ['engine_cart:generate'] do
-      # run the tests
-    end
+task :ci => ['engine_cart:generate'] do
+  # run the tests
+end
 ```
 
 And in your e.g. spec_helper.rb, initialize EngineCart:
@@ -37,19 +42,14 @@ And in your e.g. spec_helper.rb, initialize EngineCart:
 
 ## Configuration
 
-You can configure where the test app is created by setting the `TEST_APP` constant, e.g.:
+You can configure where the test app is created by setting the `ENGINE_CART_DESTINATION` env variable, e.g.:
 
 ```ruby
-  TEST_APP = "/tmp/generate-the-test-app-into-tmp-instead-of-your-app
+ENGINE_CART_DESTINATION="/tmp/generate-the-test-app-into-tmp-instead-of-your-app" rake ci
 ```
 
-You can also inject additional gems, or run other Rails generators by adding files to the `TEST_APP_TEMPLATES` directory.
+After creating the test application, Engine Cart will run the test app generator (located in ./spec/test_app_templates/lib/generators). By default, it will attempt to run the `install` generator for your engine. If you do not have an `install` generator, or want to add additional steps (e.g. to install additional gems), you can add them to the `TestAppGenerator`.
 
-Gemfile.extra
-
-test_app generator
-
-within_test_app
 
 ## Contributing
 

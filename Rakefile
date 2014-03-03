@@ -13,15 +13,31 @@ task :generate_test_gem => ['engine_cart:setup'] do
   system("rails plugin new spec/internal_gem")
   system("mv spec/internal_gem spec/internal")
   Rake::Task['engine_cart:inject_gemfile_extras'].invoke
-  within_test_app do
+  EngineCart.within_test_app do
     system "git init"
     FileUtils.touch('.gitignore')
     Dir.mkdir('spec')
+    File.open('spec/spec_helper.rb', 'w') do |f|
+      f.puts <<-EOF
+        require 'engine_cart'
+        EngineCart.load_application!
+
+        require 'rspec/rails'
+        require 'rspec/autorun'
+
+        require 'internal_gem'
+        RSpec.configure do |config|
+
+        end
+      EOF
+    end
+
     system "bundle install"
     system "echo 'require \"engine_cart/rake_task\"\n' >> Rakefile"
 
     system("rake engine_cart:prepare")
-    system("rake engine_cart:generate")
+    system "echo '\ngem \"rspec-rails\"\n' >> Gemfile"
+    system "bundle install"
   end
 end
 

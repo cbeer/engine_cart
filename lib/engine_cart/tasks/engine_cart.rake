@@ -1,22 +1,23 @@
+require 'engine_cart'
+require 'generators/engine_cart/install_generator'
+
 namespace :engine_cart do
 
   desc "Prepare a gem for using engine_cart"
   task :prepare do
-    require 'generators/engine_cart/engine_cart_generator'
-    generator = EngineCartGenerator.new
+    generator = EngineCart::InstallGenerator.new
     generator.create_test_app_templates
     generator.ignore_test_app
+    generator.add_gemfile_include
   end
 
   task :setup do
-    TEST_APP_TEMPLATES = 'spec/test_app_templates' unless defined? TEST_APP_TEMPLATES
-    TEST_APP = 'spec/internal' unless defined? TEST_APP
   end
 
   desc "Clean out the test rails app"
   task :clean => [:setup] do
     puts "Removing sample rails app"
-    `rm -rf #{TEST_APP}`
+    `rm -rf #{EngineCart.destination}`
   end
 
   task :create_test_rails_app => [:setup] do
@@ -28,59 +29,60 @@ namespace :engine_cart do
         end
 
         Bundler.with_clean_env do
-          `rails #{version} new internal`
+          `rails #{version} new internal #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
         end
+
         unless $?
           raise "Error generating new rails app. Aborting."
         end
       end
 
-      FileUtils.move "#{dir}/internal", "#{TEST_APP}"
+      FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
 
     end
   end
 
   task :inject_gemfile_extras => [:setup] do
     # Add our gem and extras to the generated Rails app
-    open(File.expand_path('Gemfile', TEST_APP), 'a') do |f|
-      gemfile_extras_path = File.expand_path("Gemfile.extra", TEST_APP_TEMPLATES)
+    open(File.expand_path('Gemfile', EngineCart.destination), 'a') do |f|
+      gemfile_extras_path = File.expand_path("Gemfile.extra", EngineCart.templates_path)
 
       f.write <<-EOF
-        gem '#{current_engine_name}', :path => '#{File.expand_path('.')}'
-
-        if File.exists?("#{gemfile_extras_path}")
-          eval File.read("#{gemfile_extras_path}"), nil, "#{gemfile_extras_path}"
-        end
+        gem '#{EngineCart.current_engine_name}', :path => '#{File.expand_path('.')}'
 EOF
     end
   end
 
   desc "Create the test rails app"
   task :generate => [:setup] do
+    return if File.exists? File.expand_path('.generated_engine_cart', EngineCart.destination)
 
-    unless File.exists? File.expand_path('Rakefile', TEST_APP)
-      # Create a new test rails app
-      Rake::Task['engine_cart:create_test_rails_app'].invoke
-      Rake::Task['engine_cart:inject_gemfile_extras'].invoke
+    # Create a new test rails app
+    Rake::Task['engine_cart:create_test_rails_app'].invoke
 
-      # Copy our test app generators into the app and prepare it
-      system "cp -r #{TEST_APP_TEMPLATES}/lib/generators #{TEST_APP}/lib"
-      within_test_app do
-        system "bundle install"
-        system "rails generate test_app"
-        system "rake db:migrate db:test:prepare"
-      end
-      puts "Done generating test app"
+    system "bundle install"
+
+    Rake::Task['engine_cart:inject_gemfile_extras'].invoke
+
+    # Copy our test app generators into the app and prepare it
+    if File.exists? "#{EngineCart.templates_path}/lib/generators"
+      system "cp -r #{EngineCart.templates_path}/lib/generators #{EngineCart.destination}/lib"
     end
+
+    within_test_app do
+      system "bundle install"
+      system "(rails g | grep test_app) && rails generate test_app"
+      system "rake db:migrate db:test:prepare"
+    end
+
+    File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.puts true }
+
+    puts "Done generating test app"
   end
 end
 
-def current_engine_name
-  ENV["CURRENT_ENGINE_NAME"] || File.basename(Dir.glob("*.gemspec").first, '.gemspec')
-end
-
 def within_test_app
-  Dir.chdir(TEST_APP) do
+  Dir.chdir(EngineCart.destination) do
     Bundler.with_clean_env do
       yield
     end

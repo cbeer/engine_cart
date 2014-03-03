@@ -12,10 +12,57 @@ describe "EngineCart powered application" do
   end
 
   it "should have a engine_cart:generate rake task available" do
-
+    EngineCart.within_test_app do
+      `rake -T | grep "engine_cart:generate"`
+      expect($?).to eq 0
+    end
   end
 
   it "should create a rails app when the engine_cart:generate is invoked" do
+    EngineCart.within_test_app do
+      `rake engine_cart:generate`
+      expect(File).to exist(File.expand_path("spec/internal"))
+    end
+  end
 
+  it "should be able to test the application controller from the internal app" do
+    EngineCart.within_test_app do    
+      File.open('spec/some_spec.rb', 'w') do |f|
+        f.puts <<-EOF
+          require 'spec_helper'
+
+          describe ApplicationController do
+            it "should be able to test the application controller from the internal app" do
+              expect(subject).to be_a_kind_of(ActionController::Base)
+            end
+          end
+
+        EOF
+      end
+
+      `bundle exec rspec spec/some_spec.rb`
+      expect($?).to eq 0
+    end
+  end
+
+  it "should be able to run specs that reference gems provided by the test app" do
+    EngineCart.within_test_app do
+      File.open('spec/require_spec.rb', 'w') do |f|
+        f.puts <<-EOF
+          require 'spec_helper'
+          require 'coffee-rails'
+
+          describe ApplicationController do
+            it "should be able to run specs that reference gems provided by the test app" do
+              expect(true).to be_true
+            end
+          end
+
+        EOF
+      end
+
+      `bundle exec rspec spec/require_spec.rb`
+      expect($?).to eq 0
+    end
   end
 end
