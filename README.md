@@ -1,6 +1,17 @@
 # EngineCart
 
-TODO: Write a gem description
+Rake tasks to generate a test application for a Rails Engine gem.
+
+If you have a Rails Engine and want to test it, the suggested approach is a small dummy application that loads up a Rails application with your engine loaded. This dummy application is usually checked into source control and maintained with the application. This works great, until you want to test:
+
+ - different versions of Ruby (e.g. MRI and JRuby)
+ - different versions of Rails (Rails 3.x, 4.0 and 4.1)
+ - different deployment environments (with and without devise, etc)
+
+where each scenario may involve different configurations, Gemfiles, etc. 
+
+EngineCart helps by adding Rake tasks to your Engine that builds a test application for you using Rails generators (and/or application templates). 
+
 
 ## Installation
 
