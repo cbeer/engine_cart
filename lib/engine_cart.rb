@@ -31,7 +31,7 @@ module EngineCart
 
   self.engine_name = ENV["CURRENT_ENGINE_NAME"]
   self.destination = ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || "./spec/internal"
-  self.template = ENV["ENGINE_CART_TEMPLATE"] || (File.expand_path('template.rb') if File.exists? 'template.rb')
+  self.template = ENV["ENGINE_CART_TEMPLATE"]
   self.templates_path = ENV['ENGINE_CART_TEMPLATES_PATH'] || "./spec/test_app_templates"
   self.rails_options = ENV['ENGINE_CART_RAILS_OPTIONS']
 
