@@ -41,7 +41,7 @@ module EngineCart
       return if (system('git', 'check-ignore', TEST_APP, '-q') rescue false)
 
       append_file  File.expand_path('.gitignore', git_root) do 
-        "#{EngineCart.destination}\n"
+        "\n#{EngineCart.destination}\n"
       end 
     end
 
