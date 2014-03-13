@@ -21,6 +21,7 @@ namespace :engine_cart do
   end
 
   task :create_test_rails_app => [:setup] do
+    require 'tmpdir'
     require 'fileutils'
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
