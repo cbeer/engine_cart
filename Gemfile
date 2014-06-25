@@ -4,3 +4,5 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rails'
+gem 'sass', '~> 3.2.15'
+gem 'sprockets', '~> 2.11.0'

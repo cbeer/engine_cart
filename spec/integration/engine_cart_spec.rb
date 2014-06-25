@@ -54,7 +54,7 @@ describe "EngineCart powered application" do
 
           describe ApplicationController do
             it "should be able to run specs that reference gems provided by the test app" do
-              expect(true).to be_true
+              expect(true).to be_truthy
             end
           end
 

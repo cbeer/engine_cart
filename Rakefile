@@ -32,11 +32,13 @@ task :generate_test_gem => ['engine_cart:setup'] do
       EOF
     end
 
-    system "bundle install"
+    system "echo '\ngem \"rspec-rails\"\n' >> Gemfile"
+    system %Q{echo '\ngem "sass", "~> 3.2.15"\n' >> Gemfile}
+    system %Q{echo '\ngem "sprockets", "~> 2.11.0"\n' >> Gemfile}
+    system "bundle update"
     system "echo 'require \"engine_cart/rake_task\"\n' >> Rakefile"
 
     system("rake engine_cart:prepare")
-    system "echo '\ngem \"rspec-rails\"\n' >> Gemfile"
     system "bundle install"
   end
 end
