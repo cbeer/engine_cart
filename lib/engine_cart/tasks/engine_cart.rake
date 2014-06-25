@@ -30,7 +30,7 @@ namespace :engine_cart do
         end
 
         Bundler.with_clean_env do
-          `rails #{version} new internal #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
+          `rails #{version} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
         end
 
         unless $?
