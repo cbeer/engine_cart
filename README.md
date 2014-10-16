@@ -31,6 +31,14 @@ Or install it yourself as:
 
 Engine Cart comes with a generator to set up your engine to use Engine Cart. It is also packaged as a rake task:
 
+In your Rakefile add:
+
+```ruby
+require 'engine_cart/rake_task'
+```
+
+then you can call: 
+
 ```
 $ rake engine_cart:prepare
 ```
