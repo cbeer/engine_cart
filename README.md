@@ -53,9 +53,10 @@ task :ci => ['engine_cart:generate'] do
 end
 ```
 
-And in your e.g. spec_helper.rb, initialize EngineCart:
+And in your e.g. spec\_helper.rb (or rails\_helper.rb), initialize EngineCart:
 
 ```ruby
+  require 'engine_cart'
   EngineCart.load_application!
 ```
 
