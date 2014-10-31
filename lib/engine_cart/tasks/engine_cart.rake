@@ -1,4 +1,5 @@
 require 'engine_cart'
+require 'yaml'
 
 namespace :engine_cart do
 
@@ -76,7 +77,7 @@ EOF
         system "rake db:migrate db:test:prepare"
       end
 
-      File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.puts true }
+      File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.puts env_context_hash.to_yaml }
 
       puts "Done generating test app"
     end
@@ -89,4 +90,20 @@ def within_test_app
       yield
     end
   end
+end
+
+# A hash of pertinent details of the current ruby/rails environment. 
+def env_context_hash
+  # RUBY_DESCRIPTION constant is same as output of 'ruby -v'
+  hash = {}
+  hash["RUBY_DESCRIPTION"] = RUBY_DESCRIPTION 
+  hash["BUNDLE_GEMFILE"] = ENV["BUNDLE_GEMFILE"] if ENV["BUNDLE_GEMFILE"]
+  
+  # Current Rails version, if none can be found, don't include
+  begin
+    hash["RAILS_VERSION"] = Gem::Specification.find_by_name("rails").version.to_s 
+  rescue Gem::LoadError
+  end
+
+  return hash
 end
