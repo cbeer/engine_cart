@@ -8,10 +8,9 @@ If you have a Rails Engine and want to test it, the suggested approach is a smal
  - different versions of Rails (Rails 3.x, 4.0 and 4.1)
  - different deployment environments (with and without devise, etc)
 
-where each scenario may involve different configurations, Gemfiles, etc. 
+where each scenario may involve different configurations, Gemfiles, etc.
 
-EngineCart helps by adding Rake tasks to your Engine that builds a test application for you using Rails generators (and/or application templates). 
-
+EngineCart helps by adding Rake tasks to your Engine that builds a test application for you using Rails generators (and/or application templates).
 
 ## Installation
 
@@ -37,7 +36,7 @@ In your Rakefile add:
 require 'engine_cart/rake_task'
 ```
 
-then you can call: 
+then you can call:
 
 ```
 $ rake engine_cart:prepare
@@ -60,6 +59,12 @@ And in your e.g. spec\_helper.rb (or rails\_helper.rb), initialize EngineCart:
   EngineCart.load_application!
 ```
 
+When you want to clean out and regenerate the test application, you can call:
+
+```
+$ rake engine_cart:regenerate
+```
+
 ## Configuration
 
 You can configure where the test app is created by setting the `ENGINE_CART_DESTINATION` env variable, e.g.:
@@ -69,7 +74,6 @@ ENGINE_CART_DESTINATION="/tmp/generate-the-test-app-into-tmp-instead-of-your-app
 ```
 
 After creating the test application, Engine Cart will run the test app generator (located in ./spec/test_app_templates/lib/generators). By default, it will attempt to run the `install` generator for your engine. If you do not have an `install` generator, or want to add additional steps (e.g. to install additional gems), you can add them to the `TestAppGenerator`.
-
 
 ## Contributing
 

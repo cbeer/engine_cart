@@ -14,6 +14,9 @@ namespace :engine_cart do
   task :setup do
   end
 
+  desc 'Regenerate the test rails app'
+  task :regenerate => [:clean, :generate]
+
   desc "Clean out the test rails app"
   task :clean => [:setup] do
     puts "Removing sample rails app"
