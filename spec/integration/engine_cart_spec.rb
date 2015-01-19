@@ -18,7 +18,14 @@ describe "EngineCart powered application" do
     end
   end
 
-  it "should create a rails app when the engine_cart:generate is invoked" do
+  it "should have a engine_cart:regenerate rake task available" do
+    EngineCart.within_test_app do
+      `rake -T | grep "engine_cart:regenerate"`
+      expect($?).to eq 0
+    end
+  end
+
+  it "should create a rails app when the engine_cart:generate task is invoked" do
     EngineCart.within_test_app do
       `rake engine_cart:generate`
       expect(File).to exist(File.expand_path("spec/internal"))
@@ -26,7 +33,7 @@ describe "EngineCart powered application" do
   end
 
   it "should be able to test the application controller from the internal app" do
-    EngineCart.within_test_app do    
+    EngineCart.within_test_app do
       File.open('spec/some_spec.rb', 'w') do |f|
         f.puts <<-EOF
           require 'spec_helper'
