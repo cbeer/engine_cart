@@ -50,4 +50,20 @@ module EngineCart
       end
     end
   end
+
+  def self.fingerprint
+    @fingerprint || (@fingerprint_proc || method(:default_fingerprint)).call
+  end
+  
+  def self.fingerprint= fingerprint
+    @fingerprint = fingerprint
+  end
+  
+  def self.fingerprint_proc= fingerprint_proc
+    @fingerprint_proc = fingerprint_proc
+  end
+
+  def self.default_fingerprint
+    ""
+  end
 end

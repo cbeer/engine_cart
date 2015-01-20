@@ -32,6 +32,26 @@ describe "EngineCart powered application" do
     end
   end
 
+  it "should not recreate an existing rails app when the engine_cart:generate task is reinvoked" do
+    EngineCart.within_test_app do
+      `rake engine_cart:generate`
+      expect(File).to exist(File.expand_path("spec/internal"))
+      FileUtils.touch "spec/internal/.this_should_still_exist"
+      `rake engine_cart:generate`
+      expect(File).to exist(File.expand_path("spec/internal/.this_should_still_exist"))
+    end
+  end
+  
+  it "should create a rails app when the fingerprint argument is changed" do
+    EngineCart.within_test_app do
+      `rake engine_cart:generate[this-fingerprint]`
+      expect(File).to exist(File.expand_path("spec/internal"))
+      FileUtils.touch "spec/internal/.this_should_not_exist"
+      `rake engine_cart:generate[that-fingerprint]`
+      expect(File).to_not exist(File.expand_path("spec/internal/.this_should_not_exist"))
+    end
+  end
+  
   it "should be able to test the application controller from the internal app" do
     EngineCart.within_test_app do
       File.open('spec/some_spec.rb', 'w') do |f|

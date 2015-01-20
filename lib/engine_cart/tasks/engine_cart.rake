@@ -40,7 +40,8 @@ namespace :engine_cart do
           raise "Error generating new rails app. Aborting."
         end
       end
-
+      
+      Rake::Task['engine_cart:clean'].invoke if File.exists? EngineCart.destination
       FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
 
     end
@@ -59,8 +60,11 @@ EOF
   end
 
   desc "Create the test rails app"
-  task :generate => [:setup] do
-    unless File.exists? File.expand_path('.generated_engine_cart', EngineCart.destination)
+  task :generate, [:fingerprint] => [:setup] do |t, args|
+    args.with_defaults(:fingerprint => EngineCart.fingerprint) unless args[:fingerprint]
+
+    f = File.expand_path('.generated_engine_cart', EngineCart.destination)
+    unless File.exists? f and File.read(f) == args[:fingerprint]
 
       # Create a new test rails app
       Rake::Task['engine_cart:create_test_rails_app'].invoke
@@ -80,7 +84,7 @@ EOF
         system "rake db:migrate db:test:prepare"
       end
 
-      File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.puts true }
+      File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.write args[:fingerprint] }
 
       puts "Done generating test app"
     end
