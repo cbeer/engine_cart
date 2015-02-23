@@ -61,7 +61,8 @@ EOF
 
   desc "Create the test rails app"
   task :generate, [:fingerprint] => [:setup] do |t, args|
-    args.with_defaults(:fingerprint => EngineCart.fingerprint) unless args[:fingerprint]
+    original_fingerprint = args[:finterprint]
+    args.with_defaults(:fingerprint => EngineCart.fingerprint) unless original_fingerprint
 
     f = File.expand_path('.generated_engine_cart', EngineCart.destination)
     unless File.exists? f and File.read(f) == args[:fingerprint]
@@ -84,7 +85,7 @@ EOF
         system "rake db:migrate db:test:prepare"
       end
 
-      File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.write args[:fingerprint] }
+      File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.write(original_fingerprint || EngineCart.fingerprint) }
 
       puts "Done generating test app"
     end
