@@ -63,6 +63,12 @@ module EngineCart
     @fingerprint_proc = fingerprint_proc
   end
 
+  def self.rails_fingerprint_proc extra_files = []
+    lambda do
+      (Dir.glob("./*.gemspec") + Dir.glob("./Gemfile*") + Dir.glob("./db/migrate/*") + Dir.glob("./lib/generators/**/**") + Dir.glob("./spec/test_app_templates/**/**") + extra_files).map {|f| File.mtime(f) }.max.to_s
+    end
+  end
+
   def self.default_fingerprint
     ""
   end
