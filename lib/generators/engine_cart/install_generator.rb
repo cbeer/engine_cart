@@ -35,7 +35,7 @@ module EngineCart
       git_root = (`git rev-parse --show-toplevel` rescue '.').strip
 
       # If we don't have a .gitignore file already, don't worry about it
-      return unless File.exists? File.expand_path('.gitignore', git_root)
+      return unless File.exist? File.expand_path('.gitignore', git_root)
 
       # If the directory is already ignored (somehow) don't worry about it
       return if (system('git', 'check-ignore', TEST_APP, '-q') rescue false)

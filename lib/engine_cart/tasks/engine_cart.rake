@@ -40,8 +40,8 @@ namespace :engine_cart do
           raise "Error generating new rails app. Aborting."
         end
       end
-      
-      Rake::Task['engine_cart:clean'].invoke if File.exists? EngineCart.destination
+
+      Rake::Task['engine_cart:clean'].invoke if File.exist? EngineCart.destination
       FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
 
     end
@@ -53,7 +53,7 @@ namespace :engine_cart do
       gemfile_extras_path = File.expand_path("Gemfile.extra", EngineCart.templates_path)
 
       f.write <<-EOF
-        #{File.read(gemfile_extras_path) if File.exists?(gemfile_extras_path)}
+        #{File.read(gemfile_extras_path) if File.exist?(gemfile_extras_path)}
         gem '#{EngineCart.current_engine_name}', :path => '#{File.expand_path('.')}'
 EOF
     end
@@ -65,7 +65,7 @@ EOF
     args.with_defaults(:fingerprint => EngineCart.fingerprint) unless original_fingerprint
 
     f = File.expand_path('.generated_engine_cart', EngineCart.destination)
-    unless File.exists? f and File.read(f) == args[:fingerprint]
+    unless File.exist?(f) && File.read(f) == args[:fingerprint]
 
       # Create a new test rails app
       Rake::Task['engine_cart:create_test_rails_app'].invoke
@@ -75,7 +75,7 @@ EOF
       Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
       # Copy our test app generators into the app and prepare it
-      if File.exists? "#{EngineCart.templates_path}/lib/generators"
+      if File.exist? "#{EngineCart.templates_path}/lib/generators"
         system "cp -r #{EngineCart.templates_path}/lib/generators #{EngineCart.destination}/lib"
       end
 
