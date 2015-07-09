@@ -1,7 +1,7 @@
 require 'rails/generators'
 
 ##
-# EngineCartGenerator sets up an engine to 
+# EngineCartGenerator sets up an engine to
 # use engine_cart-generated test apps
 module EngineCart
   class InstallGenerator < Rails::Generators::Base
@@ -35,28 +35,30 @@ module EngineCart
       git_root = (`git rev-parse --show-toplevel` rescue '.').strip
 
       # If we don't have a .gitignore file already, don't worry about it
-      return unless File.exists? File.expand_path('.gitignore', git_root)
+      return unless File.exist? File.expand_path('.gitignore', git_root)
 
       # If the directory is already ignored (somehow) don't worry about it
       return if (system('git', 'check-ignore', TEST_APP, '-q') rescue false)
 
-      append_file  File.expand_path('.gitignore', git_root) do 
+      append_file  File.expand_path('.gitignore', git_root) do
         "\n#{EngineCart.destination}\n"
-      end 
+      end
     end
 
     def add_gemfile_include
       append_file "Gemfile" do
         <<-EOF
 
+  # the below comes from engine_cart, a gem used to test this Rails engine gem in the context of a Rails app
   file = File.expand_path("Gemfile", ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || File.expand_path("../spec/internal", __FILE__))
-  if File.exists?(file)
+  if File.exist?(file)
     puts "Loading \#{file} ..." if $DEBUG # `ruby -d` or `bundle -v`
     instance_eval File.read(file)
   else
+    # we get here when we haven't yet generated the testing app via engine_cart
     gem 'rails', ENV['RAILS_VERSION'] if ENV['RAILS_VERSION']
 
-    if ENV['RAILS_VERSION'] and ENV['RAILS_VERSION'] =~ /^4.2/
+    if ENV['RAILS_VERSION'] && ENV['RAILS_VERSION'] =~ /^4.2/
       gem 'responders', "~> 2.0"
       gem 'sass-rails', ">= 5.0"
     else
