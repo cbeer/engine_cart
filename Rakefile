@@ -11,6 +11,9 @@ end
 task :generate_test_gem => ['engine_cart:setup'] do
   system("rm -rf spec/internal")
   system("rails plugin new spec/internal_gem")
+  IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
+  IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/.*homepage.*/, "")})
+
   system("mv spec/internal_gem spec/internal")
   Rake::Task['engine_cart:inject_gemfile_extras'].invoke
   EngineCart.within_test_app do
