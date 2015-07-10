@@ -44,6 +44,13 @@ namespace :engine_cart do
       Rake::Task['engine_cart:clean'].invoke if File.exist? EngineCart.destination
       FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
 
+      # Hack for https://github.com/rails/web-console/issues/150
+      IO.write("spec/internal/Gemfile", File.open("spec/internal/Gemfile") do |f|
+        f.read.gsub(/.*web-console.*/, "").gsub(/.*IRB console on exception pages.*/, "")
+      end)
+      File.open("spec/internal/Gemfile", "a") do |f|
+        f.puts 'gem "web-console", group: :development'
+      end
     end
   end
 
