@@ -28,27 +28,27 @@ describe "EngineCart powered application" do
   it "should create a rails app when the engine_cart:generate task is invoked" do
     EngineCart.within_test_app do
       `rake engine_cart:generate`
-      expect(File).to exist(File.expand_path("spec/internal"))
+      expect(File).to exist(File.expand_path(EngineCart.destination))
     end
   end
 
   it "should not recreate an existing rails app when the engine_cart:generate task is reinvoked" do
     EngineCart.within_test_app do
       `rake engine_cart:generate`
-      expect(File).to exist(File.expand_path("spec/internal"))
-      FileUtils.touch "spec/internal/.this_should_still_exist"
+      expect(File).to exist(File.expand_path(EngineCart.destination))
+      FileUtils.touch File.join(EngineCart.destination, ".this_should_still_exist")
       `rake engine_cart:generate`
-      expect(File).to exist(File.expand_path("spec/internal/.this_should_still_exist"))
+      expect(File).to exist(File.expand_path(File.join(EngineCart.destination, ".this_should_still_exist")))
     end
   end
   
   it "should create a rails app when the fingerprint argument is changed" do
     EngineCart.within_test_app do
       `rake engine_cart:generate[this-fingerprint]`
-      expect(File).to exist(File.expand_path("spec/internal"))
-      FileUtils.touch "spec/internal/.this_should_not_exist"
+      expect(File).to exist(File.expand_path(EngineCart.destination))
+      FileUtils.touch File.join(EngineCart.destination, ".this_should_not_exist")
       `rake engine_cart:generate[that-fingerprint]`
-      expect(File).to_not exist(File.expand_path("spec/internal/.this_should_not_exist"))
+      expect(File).to_not exist(File.expand_path(File.join(EngineCart.destination, ".this_should_not_exist")))
     end
   end
   
