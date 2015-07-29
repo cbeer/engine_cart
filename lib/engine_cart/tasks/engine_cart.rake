@@ -1,5 +1,4 @@
 require 'engine_cart'
-
 namespace :engine_cart do
 
   desc "Prepare a gem for using engine_cart"
@@ -32,9 +31,9 @@ namespace :engine_cart do
           "_#{Gem.loaded_specs["rails"].version}_"
         end
 
-        Bundler.with_clean_env do
-          `rails #{version} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
-        end
+        # Using bundle exec rake engine_cart:generate
+        # Rails might not be installed at system level.  What would clean env afford us here?
+        `rails #{version} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
 
         unless $?
           raise "Error generating new rails app. Aborting."
@@ -77,7 +76,7 @@ EOF
       # Create a new test rails app
       Rake::Task['engine_cart:create_test_rails_app'].invoke
 
-      system "bundle install"
+      Bundler.clean_system "bundle install"
 
       Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
@@ -88,11 +87,11 @@ EOF
 
       within_test_app do
         system "bundle install"
-        system "(rails g | grep test_app) && rails generate test_app"
-        system "rake db:migrate db:test:prepare"
+        system "(bundle exec rails g | grep test_app) && bundle exec rails generate test_app"
+        system "bundle exec rake db:migrate db:test:prepare"
       end
 
-      system "bundle install"
+      Bundler.clean_system "bundle install"
 
       File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.write(original_fingerprint || EngineCart.fingerprint) }
 
