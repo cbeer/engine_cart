@@ -10,7 +10,17 @@ end
 
 task :generate_test_gem => ['engine_cart:setup'] do
   system("rm -rf spec/internal")
-  system("rails plugin new spec/internal_gem")
+  gem 'rails'
+
+  version = if Gem.loaded_specs["rails"]
+              "_#{Gem.loaded_specs["rails"].version}_"
+            end
+
+  Bundler.with_clean_env do
+    system("rails #{version} plugin new spec/internal_gem")
+  end
+
+  IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/FIXME/, "DONTCARE")})
   IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
   IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/.*homepage.*/, "")})
 
