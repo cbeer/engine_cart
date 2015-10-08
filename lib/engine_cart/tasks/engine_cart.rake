@@ -12,6 +12,7 @@ namespace :engine_cart do
   end
 
   task :setup do
+    EngineCart.check_for_gemfile_stanza
   end
 
   desc 'Regenerate the test rails app'
