@@ -70,6 +70,6 @@ module EngineCart
   end
 
   def self.default_fingerprint
-    ""
+    (Dir.glob("./*.gemspec") + Dir.glob("./Gemfile*")).map {|f| File.mtime(f) }.max.to_s
   end
 end

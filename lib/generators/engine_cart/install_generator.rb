@@ -52,7 +52,12 @@ module EngineCart
   # the below comes from engine_cart, a gem used to test this Rails engine gem in the context of a Rails app
   file = File.expand_path("Gemfile", ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || File.expand_path("../spec/internal", __FILE__))
   if File.exist?(file)
-    eval_gemfile file
+    begin
+      eval_gemfile file
+    rescue Bundler::GemfileError => e
+       Bundler.ui.warn '[EngineCart] Skipping Rails application dependencies:'
+       Bundler.ui.warn e.message
+    end
   else
     # we get here when we haven't yet generated the testing app via engine_cart
     gem 'rails', ENV['RAILS_VERSION'] if ENV['RAILS_VERSION']
