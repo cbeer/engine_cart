@@ -12,7 +12,7 @@ If you have a Rails Engine and want to test it, the suggested approach is a smal
 
 where each scenario may involve different configurations, Gemfiles, etc.
 
-EngineCart helps by adding Rake tasks to your Engine that builds a test application for you using Rails generators (and/or application templates).
+EngineCart helps by adding Rake tasks to your Engine that builds a disposable test application for you using Rails generators (and/or application templates).
 
 ## Installation
 
@@ -103,25 +103,47 @@ Your test files (e.g. spec files for your engine) can now be written as tests fo
 
 ## Cleaning out or refreshing testing application
 
-The EngineCart test application is meant to be disposable and easily rebuildable. In some cases, EngineCart can automatically detect and rebuild the test application when key files change. By default, the application will be rebuilt when your `Gemfile` or `Gemfile.lock` changes.
+The EngineCart test application is meant to be disposable and easily rebuildable.
 
-EngineCart also provides a reasonable option for Rails-like applications:
+### Automatic detection of when to rebuild test application
+
+In some cases, EngineCart can automatically detect and rebuild the test application when key files change. By default, the application will be rebuilt when your `Gemfile` or `Gemfile.lock` changes.
+
+It can also track changes to your engine's db migrations and generators with a fingerprint mechanism.  To use this, add the line below to your rake testing task:
 
 ```ruby
 EngineCart.fingerprint_proc = EngineCart.rails_fingerprint_proc
 ```
 
-To clean out the testing app manually (from top level directory, not from the test application):
+for example, in your engine's Rakefile:
+
+```ruby
+require 'engine_cart/rake_task'
+
+task :ci do
+  EngineCart.fingerprint_proc = EngineCart.rails_fingerprint_proc
+  Rake::Task['engine_cart:generate'].invoke
+  # run the tests
+end
+```
+
+### Rake tasks for rebuilding test application
+
+You can also manually clean out and rebuild the test application.  Run these rake tasks from top level directory, not from the test application directory.
+
+To clean out the testing app:
 
 ```
 $ rake engine_cart:clean
 ```
 
-Or, if you wish to start over, with a pristine testing application:
+Or, if you wish to start over immediately with a pristine testing application, the following will clean out the testing app and generate it anew:
 
 ```
 $ rake engine_cart:regenerate
 ```
+
+### Brute force when all else fails
 
 If you have generated a test application, there is a `Gemfile` and `Gemfile.lock` associated with the testing app at `.internal_test_app` (or wherever you designated as the test app location).  If you then update *your* engine's `Gemfile` or `.gemspec`, Bundler can get confused if it has conflicting information between your engine and the testing app.
 
