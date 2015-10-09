@@ -103,7 +103,15 @@ Your test files (e.g. spec files for your engine) can now be written as tests fo
 
 ## Cleaning out or refreshing testing application
 
-To clean out the testing app manually: (from top level directory, not from `spec/internal`)
+The EngineCart test application is meant to be disposable and easily rebuildable. In some cases, EngineCart can automatically detect and rebuild the test application when key files change. By default, the application will be rebuilt when your `Gemfile` or `Gemfile.lock` changes.
+
+EngineCart also provides a reasonable option for Rails-like applications:
+
+```ruby
+EngineCart.fingerprint_proc = EngineCart.rails_fingerprint_proc
+```
+
+To clean out the testing app manually (from top level directory, not from `spec/internal`):
 
 ```
 $ rake engine_cart:clean
