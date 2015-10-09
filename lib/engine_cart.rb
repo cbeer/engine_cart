@@ -1,5 +1,6 @@
 require "engine_cart/version"
 require 'engine_cart/gemfile_stanza'
+require 'bundler'
 
 module EngineCart
   require "engine_cart/engine" if defined? Rails
@@ -66,17 +67,19 @@ module EngineCart
 
   def self.rails_fingerprint_proc extra_files = []
     lambda do
-      (Dir.glob("./*.gemspec") + Dir.glob("./Gemfile*") + Dir.glob("./db/migrate/*") + Dir.glob("./lib/generators/**/**") + Dir.glob("./spec/test_app_templates/**/**") + extra_files).map {|f| File.mtime(f) }.max.to_s
+      EngineCart.default_fingerprint + (Dir.glob("./db/migrate/*") + Dir.glob("./lib/generators/**/**") + Dir.glob("./spec/test_app_templates/**/**") + extra_files).map {|f| File.mtime(f) }.max.to_s
     end
   end
 
   def self.default_fingerprint
-    (Dir.glob("./*.gemspec") + Dir.glob("./Gemfile*")).map {|f| File.mtime(f) }.max.to_s
+    EngineCart.env_fingerprint + (Dir.glob("./*.gemspec") + [Bundler.default_gemfile.to_s, Bundler.default_lockfile.to_s]).map {|f| File.mtime(f) }.max.to_s
+  end
+
+  def self.env_fingerprint
+    { 'RUBY_DESCRIPTION' => RUBY_DESCRIPTION, 'BUNDLE_GEMFILE' => Bundler.default_gemfile.to_s }.reject { |k, v| v.nil? || v.empty? }.to_s
   end
 
   def self.check_for_gemfile_stanza
-    require 'bundler'
-
     return unless File.exist? 'Gemfile'
 
     unless File.readlines('Gemfile').grep(/#{EngineCart.gemfile_stanza_check_line}/).any?
