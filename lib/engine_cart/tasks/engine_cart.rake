@@ -85,22 +85,22 @@ EOF
       # Create a new test rails app
       Rake::Task['engine_cart:create_test_rails_app'].invoke
 
-      system "bundle install"
+      Bundler.clean_system "bundle install"
 
       Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
       # Copy our test app generators into the app and prepare it
       if File.exist? "#{EngineCart.templates_path}/lib/generators"
-        system "cp -r #{EngineCart.templates_path}/lib/generators #{EngineCart.destination}/lib"
+        Bundler.clean_system "cp -r #{EngineCart.templates_path}/lib/generators #{EngineCart.destination}/lib"
       end
 
       within_test_app do
         system "bundle install"
-        system "(rails g | grep test_app) && rails generate test_app"
-        system "rake db:migrate db:test:prepare"
+        system "(bundle exec rails g | grep test_app) && bundle exec rails generate test_app"
+        system "bundle exec rake db:migrate db:test:prepare"
       end
 
-      system "bundle install"
+      Bundler.clean_system "bundle install"
 
       File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.write(original_fingerprint || EngineCart.fingerprint) }
 
