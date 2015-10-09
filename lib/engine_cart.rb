@@ -1,4 +1,5 @@
 require "engine_cart/version"
+require 'engine_cart/gemfile_stanza'
 
 module EngineCart
   require "engine_cart/engine" if defined? Rails
@@ -70,6 +71,17 @@ module EngineCart
   end
 
   def self.default_fingerprint
-    ""
+    (Dir.glob("./*.gemspec") + Dir.glob("./Gemfile*")).map {|f| File.mtime(f) }.max.to_s
+  end
+
+  def self.check_for_gemfile_stanza
+    require 'bundler'
+
+    return unless File.exist? 'Gemfile'
+
+    unless File.readlines('Gemfile').grep(/#{EngineCart.gemfile_stanza_check_line}/).any?
+      Bundler.ui.warn "[EngineCart] For better results, consider updating the EngineCart stanza in your Gemfile with:\n\n"
+      Bundler.ui.warn EngineCart.gemfile_stanza_text
+    end
   end
 end
