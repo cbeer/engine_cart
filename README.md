@@ -42,7 +42,7 @@ require 'engine_cart/rake_task'
 
 #### Run engine_cart:prepare
 
-In order for your Rails engine gem to use engine_cart, some configuration is required. There is an EngineCart generator to do this. It is also packaged as a rake task.
+In order for your Rails engine gem to use engine_cart, some configuration is required. There is an EngineCart generator to do this; it is also packaged as a rake task.
 
 ```
 $ rake engine_cart:prepare
@@ -54,7 +54,7 @@ You only need to run this rake task once.
 
 #### Adjust your engine's generators
 
-engine_cart is configured so it will run the test app generator (located in `./spec/test_app_templates/lib/generators`) immediately after generating a testing rails app. By default, it will attempt to run the `install` generator for your engine. If you do not have an `install` generator, or want to add additional steps (e.g. to install additional gems), you can add them to the `TestAppGenerator`.
+EngineCart is configured so it will run the test app generator (located in `./spec/test_app_templates/lib/generators`) immediately after generating a testing rails app. By default, it will attempt to run the `install` generator for your engine. If you do not have an `install` generator, or want to add additional steps (e.g. to install additional gems), you can add them to the `TestAppGenerator`.
 
 
 ### Generate the testing Rails application
@@ -74,7 +74,7 @@ $ cd .internal_test_app
 $ rails s
 ```
 
-The testing app starts at [[http://localhost:3000|http://localhost:3000]], just like any Rails app.
+The testing app starts at [http://localhost:3000](http://localhost:3000), just like any Rails app.
 
 from the `.internal_test_app` directory, you can do normal Rails things, like:
 * run rake tasks
@@ -95,8 +95,8 @@ end
 And in your engine's test framework configuration (e.g. `spec_helper.rb` or `rails_helper.rb`), initialize EngineCart:
 
 ```ruby
-  require 'engine_cart'
-  EngineCart.load_application!
+require 'engine_cart'
+EngineCart.load_application!
 ```
 
 Your test files (e.g. spec files for your engine) can now be written as tests for a Rails application.
@@ -115,7 +115,7 @@ It can also track changes to your engine's db migrations and generators with a f
 EngineCart.fingerprint_proc = EngineCart.rails_fingerprint_proc
 ```
 
-for example, in your engine's Rakefile:
+For example, in your engine's Rakefile:
 
 ```ruby
 require 'engine_cart/rake_task'
@@ -129,7 +129,7 @@ end
 
 ### Rake tasks for rebuilding test application
 
-You can also manually clean out and rebuild the test application.  Run these rake tasks from top level directory, not from the test application directory.
+You can also manually clean out and rebuild the test application.  Run these rake tasks from the top level directory, not from the test application directory.
 
 To clean out the testing app:
 
@@ -150,7 +150,7 @@ If you have generated a test application, there is a `Gemfile` and `Gemfile.lock
 To fix this:
 
 1. Clean out your testing app: `$ bundle exec rake engine_cart:clean` or `$ rm -rf .internal_test_app`
-2. Remove your engine's Gemfile.lock: `$ rm Gemfile.lock`  # not always necessary
+2. Remove your engine's Gemfile.lock: `$ rm Gemfile.lock` (not always necessary)
 3. Allow Bundler to resolve gem dependencies again: `$ bundle install`
 4. Rebuild the test application: `$ bundle exec rake engine_cart:generate`
 
@@ -166,8 +166,7 @@ ENGINE_CART_DESTINATION="/tmp/my_engines_test_app_here" rake engine_cart:generat
 
 ### Adjusting generators for Rails testing app
 
-After creating the test application, EngineCart will run the test app generator (located in ./spec/test_app_templates/lib/generators). By default, it will attempt to run the `install` generator for your engine. If you do not have an `install` generator, or want to add additional steps (e.g. to install additional gems), you can add them to the `TestAppGenerator`.
-
+After creating the test application, EngineCart will run the test app generator (located in `./spec/test_app_templates/lib/generators`). By default, it will attempt to run the `install` generator for your engine. If you do not have an `install` generator, or want to add additional steps (e.g. to install additional gems), you can add them to the `TestAppGenerator`.
 
 ## Contributing
 
