@@ -12,12 +12,10 @@ task :generate_test_gem => ['engine_cart:setup'] do
   system("rm -rf spec/internal")
   gem 'rails'
 
-  version = if Gem.loaded_specs["rails"]
-              "_#{Gem.loaded_specs["rails"].version}_"
-            end
+  rails_path = Gem.bin_path('railties', 'rails')
 
   Bundler.with_clean_env do
-    system("rails #{version} plugin new spec/internal_gem")
+    system("#{rails_path} plugin new spec/internal_gem")
   end
 
   IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/FIXME/, "DONTCARE")})

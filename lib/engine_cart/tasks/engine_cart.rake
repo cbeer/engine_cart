@@ -29,12 +29,10 @@ namespace :engine_cart do
     require 'fileutils'
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
-        version = if Gem.loaded_specs["rails"]
-          "_#{Gem.loaded_specs["rails"].version}_"
-        end
+        rails_path = Gem.bin_path('railties', 'rails')
 
         Bundler.with_clean_env do
-          `rails #{version} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
+          `#{rails_path} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
         end
 
         unless $?
