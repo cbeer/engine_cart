@@ -65,18 +65,18 @@ You can generate a Rails testing application for your engine with a rake task:
 $ rake engine_cart:generate
 ```
 
-This creates a new Rails app containing your engine at ./spec/internal by running generators.
+This creates a new Rails app containing your engine at .internal_test_app by running generators.
 
 You can start the testing app, interact with it, etc:
 
 ```
-$ cd spec/internal
+$ cd .internal_test_app
 $ rails s
 ```
 
 The testing app starts at [[http://localhost:3000|http://localhost:3000]], just like any Rails app.
 
-from the `spec/internal` directory, you can do normal Rails things, like:
+from the `.internal_test_app` directory, you can do normal Rails things, like:
 * run rake tasks
 * run rails console
 
@@ -111,7 +111,7 @@ EngineCart also provides a reasonable option for Rails-like applications:
 EngineCart.fingerprint_proc = EngineCart.rails_fingerprint_proc
 ```
 
-To clean out the testing app manually (from top level directory, not from `spec/internal`):
+To clean out the testing app manually (from top level directory, not from the test application):
 
 ```
 $ rake engine_cart:clean
@@ -123,11 +123,11 @@ Or, if you wish to start over, with a pristine testing application:
 $ rake engine_cart:regenerate
 ```
 
-If you have generated a test application, there is a `Gemfile` and `Gemfile.lock` associated with the testing app at `spec/internal` (or wherever you designated as the test app location).  If you then update *your* engine's `Gemfile` or `.gemspec`, Bundler can get confused if it has conflicting information between your engine and the testing app.
+If you have generated a test application, there is a `Gemfile` and `Gemfile.lock` associated with the testing app at `.internal_test_app` (or wherever you designated as the test app location).  If you then update *your* engine's `Gemfile` or `.gemspec`, Bundler can get confused if it has conflicting information between your engine and the testing app.
 
 To fix this:
 
-1. Clean out your testing app: `$ bundle exec rake engine_cart:clean` or `$ rm -rf spec/internal`
+1. Clean out your testing app: `$ bundle exec rake engine_cart:clean` or `$ rm -rf .internal_test_app`
 2. Remove your engine's Gemfile.lock: `$ rm Gemfile.lock`  # not always necessary
 3. Allow Bundler to resolve gem dependencies again: `$ bundle install`
 4. Rebuild the test application: `$ bundle exec rake engine_cart:generate`

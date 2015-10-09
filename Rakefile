@@ -9,20 +9,22 @@ task :ci => ['generate_test_gem', 'spec'] do
 end
 
 task :generate_test_gem => ['engine_cart:setup'] do
-  system("rm -rf spec/internal")
+  system("rm -rf .internal_test_gem")
   gem 'rails'
 
   rails_path = Gem.bin_path('railties', 'rails')
 
   Bundler.with_clean_env do
-    system("#{rails_path} plugin new spec/internal_gem")
+    system("#{rails_path} plugin new internal_test_gem")
   end
+  system("mv internal_test_gem .internal_test_gem")
 
-  IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/FIXME/, "DONTCARE")})
-  IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
-  IO.write("spec/internal_gem/internal_gem.gemspec", File.open("spec/internal_gem/internal_gem.gemspec") {|f| f.read.gsub(/.*homepage.*/, "")})
+  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/FIXME/, "DONTCARE")})
+  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
+  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/.*homepage.*/, "")})
 
-  system("mv spec/internal_gem spec/internal")
+  EngineCart.destination = '.internal_test_gem'
+
   Rake::Task['engine_cart:inject_gemfile_extras'].invoke
   EngineCart.within_test_app do
     system "git init"
@@ -36,7 +38,7 @@ task :generate_test_gem => ['engine_cart:setup'] do
         require 'rspec/rails'
         require 'rspec/autorun'
 
-        require 'internal_gem'
+        require 'internal_test_gem'
         RSpec.configure do |config|
 
         end
