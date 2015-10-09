@@ -1,3 +1,5 @@
+require 'engine_cart/params'
+
 module EngineCart
   def self.gemfile_stanza_check_line
     "engine_cart stanza: 0.8.0"
@@ -9,7 +11,7 @@ module EngineCart
     # engine_cart: #{EngineCart::VERSION}
     # #{EngineCart.gemfile_stanza_check_line}
     # the below comes from engine_cart, a gem used to test this Rails engine gem in the context of a Rails app.
-    file = File.expand_path("Gemfile", ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || File.expand_path("../spec/internal", __FILE__))
+    file = File.expand_path("Gemfile", ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || File.expand_path("#{EngineCart.destination}", File.dirname(__FILE__)))
     if File.exist?(file)
       begin
         eval_gemfile file

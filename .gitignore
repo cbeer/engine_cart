@@ -15,4 +15,4 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
-spec/internal
+.internal_test_gem
