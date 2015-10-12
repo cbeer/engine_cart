@@ -106,6 +106,20 @@ EOF
       puts "Done generating test app"
     end
   end
+
+  desc 'Start the internal test application using `rails server`'
+  task :server, [:rails_server_args] => [:generate] do |_, args|
+    within_test_app do
+      system "bundle exec rails server #{args[:rails_server_args]}"
+    end
+  end
+
+  desc 'Start the internal test application using `rails console`'
+  task :console, [:rails_console_args] => [:generate] do |_, args|
+    within_test_app do
+      system "bundle exec rails console #{args[:rails_console_args]}"
+    end
+  end
 end
 
 def within_test_app
