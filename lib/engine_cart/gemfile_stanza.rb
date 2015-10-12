@@ -20,7 +20,8 @@ module EngineCart
         Bundler.ui.warn e.message
       end
     else
-      # we get here when we haven't yet generated the testing app via engine_cart
+      Bundler.ui.warn "[EngineCart] Unable to find test application dependencies in \#{file}, using placeholder dependencies"
+
       gem 'rails', ENV['RAILS_VERSION'] if ENV['RAILS_VERSION']
 
       if ENV['RAILS_VERSION'].nil? || ENV['RAILS_VERSION'] =~ /^4.2/
