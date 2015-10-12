@@ -70,13 +70,15 @@ This creates a new Rails app containing your engine at .internal_test_app by run
 You can start the testing app, interact with it, etc:
 
 ```
-$ cd .internal_test_app
-$ rails s
+$ bundle exec rake engine_cart:server
+
+# or with arguments
+$ bundle exec rake engine_cart:server["-p 3001 -e production"]
 ```
 
 The testing app starts at [[http://localhost:3000|http://localhost:3000]], just like any Rails app.
 
-from the `.internal_test_app` directory, you can do normal Rails things, like:
+If you need to perform additional debugging tasks, you can find the internal test application in the `.internal_test_app` directory. From there, you can do normal Rails things, like:
 * run rake tasks
 * run rails console
 
