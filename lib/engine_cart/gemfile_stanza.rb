@@ -23,7 +23,7 @@ module EngineCart
       # we get here when we haven't yet generated the testing app via engine_cart
       gem 'rails', ENV['RAILS_VERSION'] if ENV['RAILS_VERSION']
 
-      if ENV['RAILS_VERSION'] && ENV['RAILS_VERSION'] =~ /^4.2/
+      if ENV['RAILS_VERSION'].nil? || ENV['RAILS_VERSION'] =~ /^4.2/
         gem 'responders', "~> 2.0"
         gem 'sass-rails', ">= 5.0"
       else
