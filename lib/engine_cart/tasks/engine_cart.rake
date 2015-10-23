@@ -84,7 +84,7 @@ EOF
       # Create a new test rails app
       Rake::Task['engine_cart:create_test_rails_app'].invoke
 
-      Bundler.clean_system "bundle install"
+      Bundler.clean_system "bundle install --quiet"
 
       Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
@@ -94,12 +94,12 @@ EOF
       end
 
       within_test_app do
-        system "bundle install"
+        system "bundle install --quiet"
         system "(bundle exec rails g | grep test_app) && bundle exec rails generate test_app"
         system "bundle exec rake db:migrate db:test:prepare"
       end
 
-      Bundler.clean_system "bundle install"
+      Bundler.clean_system "bundle install --quiet"
 
       File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.write(original_fingerprint || EngineCart.fingerprint) }
 
