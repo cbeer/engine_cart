@@ -34,7 +34,7 @@ namespace :engine_cart do
           `#{rails_path} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
         end
 
-        fail 'Error generating new rails app. Aborting.' unless $CHILD_STATUS
+        fail 'Error generating new rails app. Aborting.' unless $?
       end
 
       Rake::Task['engine_cart:clean'].invoke if File.exist? EngineCart.destination

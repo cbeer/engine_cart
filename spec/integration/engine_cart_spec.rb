@@ -15,14 +15,14 @@ describe 'EngineCart powered application' do
   it 'has a engine_cart:generate rake task available' do
     EngineCart.within_test_app do
       `rake -T | grep "engine_cart:generate"`
-      expect($CHILD_STATUS).to eq 0
+      expect($?).to eq 0
     end
   end
 
   it 'has a engine_cart:regenerate rake task available' do
     EngineCart.within_test_app do
       `rake -T | grep "engine_cart:regenerate"`
-      expect($CHILD_STATUS).to eq 0
+      expect($?).to eq 0
     end
   end
 
@@ -69,7 +69,7 @@ describe 'EngineCart powered application' do
       end
 
       `bundle exec rspec spec/some_spec.rb`
-      expect($CHILD_STATUS).to eq 0
+      expect($?).to eq 0
     end
   end
 
@@ -90,7 +90,7 @@ describe 'EngineCart powered application' do
       end
 
       `bundle exec rspec spec/require_spec.rb`
-      expect($CHILD_STATUS).to eq 0
+      expect($?).to eq 0
     end
   end
 end
