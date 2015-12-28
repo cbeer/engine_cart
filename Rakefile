@@ -36,7 +36,6 @@ task :generate_test_gem => ['engine_cart:setup'] do
         EngineCart.load_application!
 
         require 'rspec/rails'
-        require 'rspec/autorun'
 
         require 'internal_test_gem'
         RSpec.configure do |config|
