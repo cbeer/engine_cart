@@ -32,7 +32,8 @@ namespace :engine_cart do
         rails_path = Gem.bin_path('railties', 'rails')
 
         Bundler.with_clean_env do
-          `#{rails_path} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
+          rails_version = "_#{ENV['RAILS_VERSION']}_" if ENV['RAILS_VERSION']
+          `#{rails_path} #{rails_version} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
         end
 
         unless $?
