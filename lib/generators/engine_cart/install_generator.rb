@@ -10,9 +10,9 @@ module EngineCart
     def create_test_app_templates
       empty_directory EngineCart.templates_path
 
-      empty_directory File.expand_path("lib/generators", EngineCart.templates_path)
+      empty_directory File.expand_path('lib/generators', EngineCart.templates_path)
 
-      create_file File.expand_path("lib/generators/test_app_generator.rb", EngineCart.templates_path), :skip => true do
+      create_file File.expand_path('lib/generators/test_app_generator.rb', EngineCart.templates_path), skip: true do
         <<-EOF
         require 'rails/generators'
 
@@ -34,21 +34,29 @@ module EngineCart
 
     def ignore_test_app
       # Ignore the generated test app in the gem's .gitignore file
-      git_root = (`git rev-parse --show-toplevel` rescue '.').strip
+      git_root = (begin
+                    `git rev-parse --show-toplevel`
+                  rescue
+                    '.'
+                  end).strip
 
       # If we don't have a .gitignore file already, don't worry about it
       return unless File.exist? File.expand_path('.gitignore', git_root)
 
       # If the directory is already ignored (somehow) don't worry about it
-      return if (system('git', 'check-ignore', TEST_APP, '-q') rescue false)
+      return if begin
+                   system('git', 'check-ignore', TEST_APP, '-q')
+                 rescue
+                   false
+                 end
 
-      append_file  File.expand_path('.gitignore', git_root) do
+      append_file File.expand_path('.gitignore', git_root) do
         "\n#{EngineCart.destination}\n"
       end
     end
 
     def add_gemfile_include
-      append_file "Gemfile" do
+      append_file 'Gemfile' do
         EngineCart.gemfile_stanza_text
       end
     end
