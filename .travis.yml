@@ -1,9 +1,9 @@
 language: ruby
 sudo: false
 rvm:
-  - 2.2.2
+  - 2.3.0
 
 matrix:
   include:
-    - rvm: '2.2.2'
-      env: "RAILS_VERSION=4.1.13"
+    - rvm: '2.2.4'
+      env: "RAILS_VERSION=4.1.14"
