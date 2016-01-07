@@ -67,10 +67,8 @@ namespace :engine_cart do
     open(File.expand_path('Gemfile', EngineCart.destination), 'a') do |f|
       gemfile_extras_path = File.expand_path("Gemfile.extra", EngineCart.templates_path)
 
-      f.write <<-EOF
-        #{File.read(gemfile_extras_path) if File.exist?(gemfile_extras_path)}
-        gem '#{EngineCart.current_engine_name}', :path => '#{File.expand_path('.')}'
-EOF
+      f.write File.read(gemfile_extras_path) if File.exist?(gemfile_extras_path)
+      f.write "gem '#{EngineCart.current_engine_name}', path: '#{File.expand_path('.')}'"
     end
   end
 
