@@ -22,11 +22,20 @@ module EngineCart
     else
       Bundler.ui.warn "[EngineCart] Unable to find test application dependencies in \#{file}, using placeholder dependencies"
 
-      gem 'rails', ENV['RAILS_VERSION'] if ENV['RAILS_VERSION']
+      if ENV['RAILS_VERSION']
+        if ENV['RAILS_VERSION'] == 'edge'
+          gem 'rails', github: 'rails/rails'
+          ENV['ENGINE_CART_RAILS_OPTIONS']= "--edge --skip-turbolinks"
+        else
+          gem 'rails', ENV['RAILS_VERSION']
+        end
+      end
 
-      if ENV['RAILS_VERSION'].nil? || ENV['RAILS_VERSION'] =~ /^4.2/
+      if ENV['RAILS_VERSION'].nil? || ENV['RAILS_VERSION'] =~ /^4\.2/
         gem 'responders', "~> 2.0"
         gem 'sass-rails', ">= 5.0"
+      elsif ENV['RAILS_VERSION'] =~ /^5\.0/ || ENV['RAILS_VERSION'] == 'edge'
+        # nop
       else
         gem 'sass-rails', "< 5.0"
       end
