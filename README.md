@@ -48,7 +48,7 @@ In order for your Rails engine gem to use engine_cart, some configuration is req
 $ rake engine_cart:prepare
 ```
 
-This will create `lib/generators/test_app_generator.rb` in your engine and it will also append some code to your engine's `Gemfile`.
+This will create `./spec/test_app_templates/lib/generators` in your engine and it will also append some code to your engine's `Gemfile`.
 
 You only need to run this rake task once.
 
