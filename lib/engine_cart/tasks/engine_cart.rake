@@ -29,18 +29,10 @@ namespace :engine_cart do
     require 'fileutils'
     Dir.mktmpdir do |dir|
       Dir.chdir dir do
-        version = ENV.fetch('RAILS_VERSION', ">= 0")
-        rails_path = Gem.bin_path('railties', 'rails', version)
-
-        Bundler.with_clean_env do
-          `#{rails_path} new internal --skip-spring #{EngineCart.rails_options} #{"-m #{EngineCart.template}" if EngineCart.template}`
-        end
-
-        unless $?
-          raise "Error generating new rails app. Aborting."
-        end
+        require 'rails/generators'
+        require 'rails/generators/rails/app/app_generator'
+        Rails::Generators::AppGenerator.start(['internal', '--skip_spring', EngineCart.rails_options, ("-m #{EngineCart.template}" if EngineCart.template)].compact)
       end
-
       Rake::Task['engine_cart:clean'].invoke if File.exist? EngineCart.destination
       FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
 
