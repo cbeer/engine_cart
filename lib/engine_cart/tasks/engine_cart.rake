@@ -28,11 +28,23 @@ namespace :engine_cart do
     require 'tmpdir'
     require 'fileutils'
     Dir.mktmpdir do |dir|
-      Dir.chdir dir do
-        require 'rails/generators'
-        require 'rails/generators/rails/app/app_generator'
-        Rails::Generators::AppGenerator.start(['internal', '--skip_spring', EngineCart.rails_options, ("-m #{EngineCart.template}" if EngineCart.template)].compact)
+      # Fork into a new process to avoid polluting the current one with the partial Rails environment ...
+      pid = fork do
+        Dir.chdir dir do
+          require 'rails/generators'
+          require 'rails/generators/rails/app/app_generator'
+
+          # Using the Rails generator directly, instead of shelling out, to
+          # ensure we use the right version of Rails.
+          Rails::Generators::AppGenerator.start(['internal', '--skip_spring', EngineCart.rails_options, ("-m #{EngineCart.template}" if EngineCart.template)].compact)
+        end
+        exit 0
       end
+
+      # ... and then wait for it to catch up.
+      _, status = Process.waitpid2 pid
+      exit status.exitstatus unless status.success?
+
       Rake::Task['engine_cart:clean'].invoke if File.exist? EngineCart.destination
       FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
 
