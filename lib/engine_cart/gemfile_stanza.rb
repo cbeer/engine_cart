@@ -2,7 +2,7 @@ require 'engine_cart/params'
 
 module EngineCart
   def self.gemfile_stanza_check_line
-    "engine_cart stanza: 0.8.0"
+    "engine_cart stanza: 0.10.0"
   end
 
   def self.gemfile_stanza_text
@@ -31,12 +31,12 @@ module EngineCart
         end
       end
 
-      if ENV['RAILS_VERSION'].nil? || ENV['RAILS_VERSION'] =~ /^4\.2/
+      case ENV['RAILS_VERSION']
+      when /^4\.2/
         gem 'responders', '~> 2.0'
         gem 'sass-rails', '>= 5.0'
-      elsif ENV['RAILS_VERSION'] =~ /^5\.0/ || ENV['RAILS_VERSION'] == 'edge'
-        # nop
-      else
+        gem 'coffee-rails', '~> 4.1.0'
+      when /^4\.[01]/
         gem 'sass-rails', '< 5.0'
       end
     end
