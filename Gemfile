@@ -4,5 +4,8 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rails', ENV['RAILS_VERSION'] if ENV['RAILS_VERSION']
-gem 'sass', '~> 3.2.15'
-gem 'sprockets', '~> 2.11.0'
+
+if ENV['RAILS_VERSION'] && ENV['RAILS_VERSION'] < '4.2'
+  gem 'sass', '~> 3.2.15'
+  gem 'sprockets', '~> 2.11.0'
+end
