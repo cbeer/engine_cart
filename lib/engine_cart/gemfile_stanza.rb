@@ -2,7 +2,7 @@ require 'engine_cart/params'
 
 module EngineCart
   def self.gemfile_stanza_check_line
-    "engine_cart stanza: 0.8.0"
+    "engine_cart stanza: 0.10.0"
   end
 
   def self.gemfile_stanza_text
@@ -11,7 +11,7 @@ module EngineCart
     # engine_cart: #{EngineCart::VERSION}
     # #{EngineCart.gemfile_stanza_check_line}
     # the below comes from engine_cart, a gem used to test this Rails engine gem in the context of a Rails app.
-    file = File.expand_path("Gemfile", ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || File.expand_path("#{EngineCart.destination}", File.dirname(__FILE__)))
+    file = File.expand_path('Gemfile', ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || File.expand_path('#{EngineCart.destination}', File.dirname(__FILE__)))
     if File.exist?(file)
       begin
         eval_gemfile file
@@ -25,19 +25,19 @@ module EngineCart
       if ENV['RAILS_VERSION']
         if ENV['RAILS_VERSION'] == 'edge'
           gem 'rails', github: 'rails/rails'
-          ENV['ENGINE_CART_RAILS_OPTIONS']= "--edge --skip-turbolinks"
+          ENV['ENGINE_CART_RAILS_OPTIONS'] = '--edge --skip-turbolinks'
         else
           gem 'rails', ENV['RAILS_VERSION']
         end
       end
 
-      if ENV['RAILS_VERSION'].nil? || ENV['RAILS_VERSION'] =~ /^4\.2/
-        gem 'responders', "~> 2.0"
-        gem 'sass-rails', ">= 5.0"
-      elsif ENV['RAILS_VERSION'] =~ /^5\.0/ || ENV['RAILS_VERSION'] == 'edge'
-        # nop
-      else
-        gem 'sass-rails', "< 5.0"
+      case ENV['RAILS_VERSION']
+      when /^4\.2/
+        gem 'responders', '~> 2.0'
+        gem 'sass-rails', '>= 5.0'
+        gem 'coffee-rails', '~> 4.1.0'
+      when /^4\.[01]/
+        gem 'sass-rails', '< 5.0'
       end
     end
     # END ENGINE_CART BLOCK
