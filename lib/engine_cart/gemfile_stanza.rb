@@ -1,5 +1,3 @@
-require 'engine_cart/params'
-
 module EngineCart
   def self.gemfile_stanza_check_line
     "engine_cart stanza: 0.10.0"

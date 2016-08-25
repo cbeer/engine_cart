@@ -24,7 +24,7 @@ module EngineCart
           # after setting up the application
 
           def install_engine
-            generate '#{EngineCart.current_engine_name}:install'
+            generate '#{EngineCart.engine_name}:install'
           end
         end
 
