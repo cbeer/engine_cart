@@ -6,9 +6,7 @@ rvm:
 matrix:
   include:
     - rvm: '2.2.5'
-      env: "RAILS_VERSION=4.1.15"
-    - rvm: '2.2.5'
-      env: "RAILS_VERSION=4.2.6"
+      env: "RAILS_VERSION=4.2.7.1"
 
 env:
- - "RAILS_VERSION=5.0.0"
+ - "RAILS_VERSION=5.0.0.1"
