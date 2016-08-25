@@ -126,11 +126,11 @@ namespace :engine_cart do
 end
 
 def within_test_app
-  puts "travis_fold:start:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
+  puts "\rtravis_fold:start:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
   Dir.chdir(EngineCart.destination) do
     Bundler.with_clean_env do
       yield
     end
   end
-  puts "travis_fold:end:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
+  puts "\rtravis_fold:end:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
 end
