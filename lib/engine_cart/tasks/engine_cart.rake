@@ -69,7 +69,7 @@ namespace :engine_cart do
   task :inject_gemfile_extras => [:setup] do
     # Add our gem and extras to the generated Rails app
     open(File.expand_path('Gemfile', EngineCart.destination), 'a') do |f|
-      f.puts "gem '#{EngineCart.current_engine_name}', path: '#{File.expand_path('.')}'"
+      f.puts "gem '#{EngineCart.engine_name}', path: '#{File.expand_path('.')}'"
 
       gemfile_extras_path = File.expand_path("Gemfile.extra", EngineCart.templates_path)
       f.puts "eval_gemfile File.expand_path('#{gemfile_extras_path}', File.dirname(__FILE__)) if File.exist?('#{gemfile_extras_path}')"
@@ -126,11 +126,11 @@ namespace :engine_cart do
 end
 
 def within_test_app
-  puts "travis_fold:start:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
+  puts "\rtravis_fold:start:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
   Dir.chdir(EngineCart.destination) do
     Bundler.with_clean_env do
       yield
     end
   end
-  puts "travis_fold:end:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
+  puts "\rtravis_fold:end:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
 end
