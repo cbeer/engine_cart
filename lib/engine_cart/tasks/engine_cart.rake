@@ -69,7 +69,7 @@ namespace :engine_cart do
   task :inject_gemfile_extras => [:setup] do
     # Add our gem and extras to the generated Rails app
     open(File.expand_path('Gemfile', EngineCart.destination), 'a') do |f|
-      f.puts "gem '#{EngineCart.engine_name}', path: '#{File.expand_path('.')}'"
+      f.puts "gemspec path: '#{File.expand_path('.')}'"
 
       gemfile_extras_path = File.expand_path("Gemfile.extra", EngineCart.templates_path)
       f.puts "eval_gemfile File.expand_path('#{gemfile_extras_path}', File.dirname(__FILE__)) if File.exist?('#{gemfile_extras_path}')"
