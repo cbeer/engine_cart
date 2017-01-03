@@ -132,5 +132,6 @@ def within_test_app
       yield
     end
   end
+ensure
   puts "\rtravis_fold:end:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
 end
