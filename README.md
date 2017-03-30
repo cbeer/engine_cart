@@ -32,7 +32,7 @@ Or install it yourself as:
 
 ### engine_cart rake tasks
 
-To use engine_cart's rake tasks, in *your* engine's Rakefile add:
+To use engine_cart's rake tasks, add the following to *your* engine's Rakefile (your_engine/Rakefile):
 
 ```ruby
 require 'engine_cart/rake_task'
