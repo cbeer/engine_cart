@@ -4,4 +4,4 @@ rvm:
   - 2.4.0
 
 env:
- - "RAILS_VERSION=5.0.2"
+ - "RAILS_VERSION=5.0.3"

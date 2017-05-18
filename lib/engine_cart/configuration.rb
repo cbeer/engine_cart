@@ -11,15 +11,15 @@ module EngineCart
     end
 
     def load_configs(config_files)
-      config = default_config
-
-      (default_configuration_paths + config_files.compact).each do |p|
-        path = File.expand_path(p)
-        next unless File.exist? path
-        config.merge!(read_config(path))
+      @config ||= begin
+        cfg = default_config
+        (default_configuration_paths + config_files.compact).each do |p|
+          path = File.expand_path(p)
+          next unless File.exist? path
+          cfg.merge!(read_config(path))
+        end
+        cfg
       end
-
-      config
     end
 
     ##
@@ -79,12 +79,12 @@ module EngineCart
 
     def read_config(config_file)
       $stdout.puts "Loading configuration from #{config_file}" if verbose?
-      config = YAML.load(ERB.new(IO.read(config_file)).result(binding))
-      unless config
+      cfg = YAML.load(ERB.new(IO.read(config_file)).result(binding))
+      unless cfg
         $stderr.puts "Unable to parse config #{config_file}" if verbose?
         return {}
       end
-      convert_keys(config)
+      convert_keys(cfg)
     end
 
     def convert_keys(hash)

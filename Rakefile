@@ -4,24 +4,31 @@ require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new(:spec)
 
+task :default => :ci
+
 task :ci => ['generate_test_gem', 'spec'] do
 
 end
 
 task :generate_test_gem => ['engine_cart:setup'] do
-  system("rm -rf .internal_test_gem")
-  gem 'rails'
+  destination = EngineCart.destination
 
-  rails_path = Gem.bin_path('railties', 'rails')
+  system("rm -rf #{destination}")
+
+  if ENV['RAILS_VERSION']
+    gem 'rails', ENV['RAILS_VERSION']
+  else
+    gem 'rails'
+  end
 
   Bundler.with_clean_env do
-    system("#{rails_path} plugin new internal_test_gem")
+    system('bundle exec rails plugin new /tmp/internal_test_gem')
   end
-  system("mv internal_test_gem .internal_test_gem")
+  system("mv /tmp/internal_test_gem #{destination}")
 
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/FIXME/, "DONTCARE")})
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/.*homepage.*/, "")})
+  IO.write("#{destination}/internal_test_gem.gemspec", File.open("#{destination}/internal_test_gem.gemspec") {|f| f.read.gsub(/FIXME/, "DONTCARE")})
+  IO.write("#{destination}/internal_test_gem.gemspec", File.open("#{destination}/internal_test_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
+  IO.write("#{destination}/internal_test_gem.gemspec", File.open("#{destination}/internal_test_gem.gemspec") {|f| f.read.gsub(/.*homepage.*/, "")})
 
   Rake::Task['engine_cart:inject_gemfile_extras'].invoke
   EngineCart.within_test_app do
@@ -48,11 +55,10 @@ task :generate_test_gem => ['engine_cart:setup'] do
       system %Q{echo '\ngem "sprockets", "~> 2.11.0"\n' >> Gemfile}
     end
     Bundler.clean_system "bundle update --quiet"
-    system "echo 'require \"engine_cart/rake_task\"\n' >> Rakefile"
 
+    system "echo 'require \"engine_cart/rake_task\"\n' >> Rakefile"
     system("bundle exec rake engine_cart:prepare")
     Bundler.clean_system "bundle install --quiet"
   end
 end
 
-task :default => :ci
