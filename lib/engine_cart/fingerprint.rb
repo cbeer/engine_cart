@@ -1,4 +1,5 @@
 require 'bundler'
+require 'digest/md5'
 
 module EngineCart
 
@@ -45,7 +46,7 @@ module EngineCart
   end
 
   def self.rails_fingerprint(extra_files = [])
-    (EngineCart.rails_files + extra_files).map { |f| File.mtime(f) }.max.to_s
+    EngineCart.files_digest(EngineCart.rails_files + extra_files)
   end
 
   def self.rails_files
@@ -61,7 +62,7 @@ module EngineCart
   end
 
   def self.gem_fingerprint
-    EngineCart.gem_files.map { |f| File.mtime(f) }.max.to_s
+    EngineCart.files_digest EngineCart.gem_files
   end
 
   def self.gem_files
@@ -81,6 +82,15 @@ module EngineCart
 
   def self.bundle_lockfile
     @bundle_gemfile ||= Bundler.default_lockfile.to_s
+  end
+
+  def self.files_digest(files)
+    files_digests = files.collect {|f| file_digest(f) }.join
+    Digest::MD5.hexdigest(files_digests)
+  end
+
+  def self.file_digest(f)
+    File.file?(f) ? Digest::MD5.hexdigest(File.read(f)) : ''
   end
 
 end
