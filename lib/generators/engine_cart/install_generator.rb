@@ -32,7 +32,9 @@ module EngineCart
       end
     end
 
-    def ignore_test_app
+    def ignore_test_app(app_path = nil)
+      app_path ||= EngineCart.destination
+
       # Ignore the generated test app in the gem's .gitignore file
       git_root = (`git rev-parse --show-toplevel` rescue '.').strip
 
@@ -40,10 +42,10 @@ module EngineCart
       return unless File.exist? File.expand_path('.gitignore', git_root)
 
       # If the directory is already ignored (somehow) don't worry about it
-      return if (system('git', 'check-ignore', TEST_APP, '-q') rescue false)
+      return if (system('git', 'check-ignore', app_path, '-q') rescue false)
 
-      append_file  File.expand_path('.gitignore', git_root) do
-        "\n#{EngineCart.destination}\n"
+      append_file File.expand_path('.gitignore', git_root) do
+        "\n#{app_path}\n"
       end
     end
 
