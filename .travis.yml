@@ -5,12 +5,12 @@ rvm:
 
 matrix:
   include:
-    - rvm: jruby-9.1.9.0
-    - rvm: 2.3.3
-      env: "RAILS_VERSION=5.0.3"
+    - rvm: jruby-9.1.13.0
+    - rvm: 2.3.4
+      env: "RAILS_VERSION=5.0.6"
   allow_failures:
-    - rvm: jruby-9.1.9.0
+    - rvm: jruby-9.1.13.0
   fast_finish: true
 
 env:
- - "RAILS_VERSION=5.1.1"
+ - "RAILS_VERSION=5.1.4"
