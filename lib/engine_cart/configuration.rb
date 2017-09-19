@@ -51,7 +51,13 @@ module EngineCart
     ##
     # Additional options when generating a test rails application
     def rails_options
-      options[:rails_options]
+      [rails_options_defaults, options[:rails_options]].flatten.uniq
+    end
+
+    ##
+    # Default options when generating a test rails application
+    def rails_options_defaults
+      ['--skip-git', '--skip_spring']
     end
 
     def default_destination
