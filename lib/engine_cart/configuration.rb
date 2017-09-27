@@ -51,7 +51,7 @@ module EngineCart
     ##
     # Additional options when generating a test rails application
     def rails_options
-      options[:rails_options]
+      Array(options[:rails_options])
     end
 
     def default_destination
@@ -74,8 +74,17 @@ module EngineCart
         destination: ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || default_destination,
         template: ENV['ENGINE_CART_TEMPLATE'],
         templates_path: ENV['ENGINE_CART_TEMPLATES_PATH'] || './spec/test_app_templates',
-        rails_options: ENV['ENGINE_CART_RAILS_OPTIONS']
+        rails_options: parse_options(ENV['ENGINE_CART_RAILS_OPTIONS'])
       }
+    end
+
+    # Split a string of options into individual options.
+    # @example
+    #   parse_options('--skip-foo --skip-bar -d postgres --skip-lala')
+    #   # => ["--skip-foo", "--skip-bar", "-d postgres", "--skip-lala"]
+    def parse_options(options)
+      return if options.nil?
+      options.scan(/(--[^\s]+|-[^\s]+\s+[^\s]+)/).flatten
     end
 
     def read_config(config_file)
