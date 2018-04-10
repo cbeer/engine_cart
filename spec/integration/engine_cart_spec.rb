@@ -12,44 +12,44 @@ describe "EngineCart powered application" do
 
   it "should have a engine_cart:generate rake task available" do
     EngineCart.within_test_app do
-      `rake -T | grep "engine_cart:generate"`
+      `bundle exec rake -T | grep "engine_cart:generate"`
       expect($?).to eq 0
     end
   end
 
   it "should have a engine_cart:regenerate rake task available" do
     EngineCart.within_test_app do
-      `rake -T | grep "engine_cart:regenerate"`
+      `bundle exec rake -T | grep "engine_cart:regenerate"`
       expect($?).to eq 0
     end
   end
 
   it "should create a rails app when the engine_cart:generate task is invoked" do
     EngineCart.within_test_app do
-      `rake engine_cart:generate`
+      `bundle exec rake engine_cart:generate`
       expect(File).to exist(File.expand_path('.internal_test_app'))
     end
   end
 
   it "should not recreate an existing rails app when the engine_cart:generate task is reinvoked" do
     EngineCart.within_test_app do
-      `rake engine_cart:generate`
+      `bundle exec rake engine_cart:generate`
       expect(File).to exist(File.expand_path('.internal_test_app'))
       FileUtils.touch File.join('.internal_test_app', ".this_should_still_exist")
-      `rake engine_cart:generate`
+      `bundle exec rake engine_cart:generate`
       expect(File).to exist(File.expand_path(File.join('.internal_test_app', ".this_should_still_exist")))
     end
   end
 
   it "should create a rails app when the fingerprint argument is changed" do
     EngineCart.within_test_app do
-      `rake engine_cart:generate`
+      `bundle exec rake engine_cart:generate`
       expect(File).to exist(File.expand_path('.internal_test_app'))
       FileUtils.touch File.join('.internal_test_app', ".this_should_not_exist")
       File.open('Gemfile', 'a') do |f|
         f.puts "# some new content"
       end
-      `rake engine_cart:generate`
+      `bundle exec rake engine_cart:generate`
       expect(File).to_not exist(File.expand_path(File.join('.internal_test_app', ".this_should_not_exist")))
     end
   end
