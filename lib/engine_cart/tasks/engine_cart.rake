@@ -77,12 +77,8 @@ namespace :engine_cart do
   end
 
   desc "Create the test rails app"
-  task :generate, [:fingerprint] => [:setup] do |t, args|
-    original_fingerprint = args[:fingerprint]
-    args.with_defaults(:fingerprint => EngineCart.fingerprint) unless original_fingerprint
-
-    f = File.expand_path('.generated_engine_cart', EngineCart.destination)
-    unless File.exist?(f) && File.read(f) == args[:fingerprint]
+  task :generate => [:setup] do
+    if EngineCart.fingerprint_expired?
 
       # Create a new test rails app
       Rake::Task['engine_cart:create_test_rails_app'].invoke
@@ -106,7 +102,7 @@ namespace :engine_cart do
 
       Bundler.clean_system "bundle install --quiet"
 
-      File.open(File.expand_path('.generated_engine_cart', EngineCart.destination), 'w') { |f| f.write(original_fingerprint || EngineCart.fingerprint) }
+      EngineCart.write_fingerprint
 
       puts "Done generating test app"
     end

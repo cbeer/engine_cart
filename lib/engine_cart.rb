@@ -2,6 +2,7 @@ require 'engine_cart/configuration'
 require "engine_cart/version"
 require 'engine_cart/gemfile_stanza'
 require 'bundler'
+require 'json'
 
 module EngineCart
   require "engine_cart/engine" if defined? Rails
@@ -18,26 +19,52 @@ module EngineCart
     end
   end
 
-  def self.fingerprint
-    @fingerprint || (@fingerprint_proc || method(:default_fingerprint)).call
+  def self.fingerprint_expired?
+    !fingerprint_current?
   end
 
-  def self.fingerprint= fingerprint
-    @fingerprint = fingerprint
+  def self.fingerprint_current?
+    return false unless File.exist? stored_fingerprint_file
+    content = File.read(stored_fingerprint_file)
+    data = JSON.parse(content, symbolize_names: true)
+    data == fingerprint
+  rescue
+    false
   end
 
-  def self.fingerprint_proc= fingerprint_proc
-    @fingerprint_proc = fingerprint_proc
-  end
-
-  def self.rails_fingerprint_proc extra_files = []
-    lambda do
-      EngineCart.default_fingerprint + (Dir.glob("./db/migrate/*") + Dir.glob("./lib/generators/**/**") + Dir.glob("./spec/test_app_templates/**/**") + extra_files).map {|f| File.mtime(f) }.max.to_s
+  def self.write_fingerprint
+    File.open(stored_fingerprint_file, 'w') do |f|
+      f.write(EngineCart.fingerprint.to_json)
     end
   end
 
-  def self.default_fingerprint
-    EngineCart.env_fingerprint + (Dir.glob("./*.gemspec") + [Bundler.default_gemfile.to_s, Bundler.default_lockfile.to_s]).map {|f| File.mtime(f) }.max.to_s
+  def self.stored_fingerprint_file
+    File.expand_path('.generated_engine_cart', EngineCart.destination)
+  end
+
+  def self.fingerprint
+    { env: env_fingerprint }.merge(files:
+      fingerprinted_files.map do |file|
+        { file: file, fingerprint: Digest::MD5.file(file).to_s }
+      end
+    )
+  end
+
+  def self.fingerprinted_files
+    Dir.glob("./*.gemspec").select { |f| File.file? f } +
+      [Bundler.default_gemfile.to_s, Bundler.default_lockfile.to_s] +
+      Dir.glob("./db/migrate/*").select { |f| File.file? f } +
+      Dir.glob("./lib/generators/**/**").select { |f| File.file? f } +
+      Dir.glob("./spec/test_app_templates/**/**").select { |f| File.file? f } +
+      configuration.extra_fingerprinted_files
+  end
+
+  def self.extra_fingerprinted_files=(extra_fingerprinted_files)
+    @extra_fingerprinted_files = extra_fingerprinted_files
+  end
+
+  def self.extra_fingerprinted_files
+    @extra_fingerprinted_files || []
   end
 
   def self.env_fingerprint

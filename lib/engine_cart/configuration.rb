@@ -54,6 +54,10 @@ module EngineCart
       Array(options[:rails_options])
     end
 
+    def extra_fingerprinted_files
+      options[:extra_fingerprinted_files]
+    end
+
     def default_destination
       '.internal_test_app'
     end
@@ -74,7 +78,8 @@ module EngineCart
         destination: ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || default_destination,
         template: ENV['ENGINE_CART_TEMPLATE'],
         templates_path: ENV['ENGINE_CART_TEMPLATES_PATH'] || './spec/test_app_templates',
-        rails_options: parse_options(ENV['ENGINE_CART_RAILS_OPTIONS'])
+        rails_options: parse_options(ENV['ENGINE_CART_RAILS_OPTIONS']),
+        extra_fingerprinted_files: []
       }
     end
 

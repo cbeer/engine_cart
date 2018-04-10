@@ -109,25 +109,7 @@ The EngineCart test application is meant to be disposable and easily rebuildable
 
 ### Automatic detection of when to rebuild test application
 
-In some cases, EngineCart can automatically detect and rebuild the test application when key files change. By default, the application will be rebuilt when your `Gemfile` or `Gemfile.lock` changes.
-
-It can also track changes to your engine's db migrations and generators with a fingerprint mechanism.  To use this, add the line below to your rake testing task:
-
-```ruby
-EngineCart.fingerprint_proc = EngineCart.rails_fingerprint_proc
-```
-
-For example, in your engine's Rakefile:
-
-```ruby
-require 'engine_cart/rake_task'
-
-task :ci do
-  EngineCart.fingerprint_proc = EngineCart.rails_fingerprint_proc
-  Rake::Task['engine_cart:generate'].invoke
-  # run the tests
-end
-```
+In some cases, EngineCart can automatically detect and rebuild the test application when key files change. By default, the application will be rebuilt when your `Gemfile`, `Gemfile.lock`, database migrations or generators change.
 
 ### Rake tasks for rebuilding test application
 
