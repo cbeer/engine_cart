@@ -40,17 +40,20 @@ describe "EngineCart powered application" do
       expect(File).to exist(File.expand_path(File.join('.internal_test_app', ".this_should_still_exist")))
     end
   end
-  
+
   it "should create a rails app when the fingerprint argument is changed" do
     EngineCart.within_test_app do
-      `rake engine_cart:generate[this-fingerprint]`
+      `rake engine_cart:generate`
       expect(File).to exist(File.expand_path('.internal_test_app'))
       FileUtils.touch File.join('.internal_test_app', ".this_should_not_exist")
-      `rake engine_cart:generate[that-fingerprint]`
+      File.open('Gemfile', 'a') do |f|
+        f.puts "# some new content"
+      end
+      `rake engine_cart:generate`
       expect(File).to_not exist(File.expand_path(File.join('.internal_test_app', ".this_should_not_exist")))
     end
   end
-  
+
   it "should be able to test the application controller from the internal app" do
     EngineCart.within_test_app do
       File.open('spec/some_spec.rb', 'w') do |f|
