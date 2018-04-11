@@ -54,6 +54,13 @@ module EngineCart
       Array(options[:rails_options])
     end
 
+    ##
+    # Additional options when generating a test rails application
+    def bundle_install_options
+      options[:bundle_install_options]
+    end
+
+
     def extra_fingerprinted_files
       options[:extra_fingerprinted_files]
     end
@@ -79,7 +86,8 @@ module EngineCart
         template: ENV['ENGINE_CART_TEMPLATE'],
         templates_path: ENV['ENGINE_CART_TEMPLATES_PATH'] || './spec/test_app_templates',
         rails_options: parse_options(ENV['ENGINE_CART_RAILS_OPTIONS']),
-        extra_fingerprinted_files: []
+        extra_fingerprinted_files: [],
+        bundle_install_options: ''
       }
     end
 

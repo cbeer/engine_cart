@@ -83,7 +83,7 @@ namespace :engine_cart do
       # Create a new test rails app
       Rake::Task['engine_cart:create_test_rails_app'].invoke
 
-      Bundler.clean_system "bundle install --quiet"
+      Bundler.clean_system "bundle install --quiet #{EngineCart.bundle_install_options}"
 
       Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
@@ -93,14 +93,14 @@ namespace :engine_cart do
       end
 
       within_test_app do
-        unless (system("bundle install --quiet") or system("bundle update --quiet")) and
+        unless (system("bundle install --quiet #{EngineCart.bundle_install_options}") or system("bundle update --quiet")) and
               system "(bundle exec rails g | grep test_app) && bundle exec rails generate test_app" and
               system "bundle exec rake db:migrate db:test:prepare"
           raise "EngineCart failed on with: #{$?}"
         end
       end
 
-      Bundler.clean_system "bundle install --quiet"
+      Bundler.clean_system "bundle install --quiet #{EngineCart.bundle_install_options}"
 
       EngineCart.write_fingerprint
 

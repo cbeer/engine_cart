@@ -76,7 +76,7 @@ module EngineCart
   end
 
   class << self
-    %w(destination engine_name templates_path template rails_options).each do |method|
+    %w(destination engine_name templates_path template rails_options bundle_install_options).each do |method|
       define_method(method) do
         configuration.send(method)
       end
