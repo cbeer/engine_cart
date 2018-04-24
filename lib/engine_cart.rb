@@ -3,6 +3,7 @@ require "engine_cart/version"
 require 'engine_cart/gemfile_stanza'
 require 'bundler'
 require 'json'
+require 'digest'
 
 module EngineCart
   require "engine_cart/engine" if defined? Rails
