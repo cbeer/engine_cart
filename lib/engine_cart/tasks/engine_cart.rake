@@ -48,7 +48,7 @@ namespace :engine_cart do
       Rake::Task['engine_cart:clean'].invoke if File.exist? EngineCart.destination
       FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
 
-      if Gem.loaded_specs['rails'].version.to_s <= '5.2.2'
+      if Gem.loaded_specs['rails'].version.to_s < '5.2.3'
         # Hack for https://github.com/rails/rails/issues/35153
         gemfile = File.join(EngineCart.destination, 'Gemfile')
         IO.write(gemfile, File.open(gemfile) do |f|
