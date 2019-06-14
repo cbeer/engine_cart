@@ -87,9 +87,14 @@ module EngineCart
   def self.check_for_gemfile_stanza
     return unless File.exist? 'Gemfile'
 
-    unless File.readlines('Gemfile').grep(/#{EngineCart.gemfile_stanza_check_line}/).any?
+    unless gemfile_stanza_current?
       Bundler.ui.warn "[EngineCart] For better results, consider updating the EngineCart stanza in your Gemfile with:\n\n"
       Bundler.ui.warn EngineCart.gemfile_stanza_text
     end
+  end
+
+  def self.gemfile_stanza_current?
+    return false unless File.exist? 'Gemfile'
+    File.readlines('Gemfile').grep(/#{EngineCart.gemfile_stanza_check_line}/).any?
   end
 end
