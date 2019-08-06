@@ -85,6 +85,15 @@ namespace :engine_cart do
     end
   end
 
+  desc 'find out if the generated app needs to be rebuilt'
+  task :test => [:setup] do
+    EngineCart.debug = true
+    if EngineCart.fingerprint_expired?
+      puts "Expired!"
+      exit 1
+    end
+  end
+
   desc "Create the test rails app"
   task :generate => [:setup] do
     if EngineCart.fingerprint_expired?
