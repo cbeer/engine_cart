@@ -25,10 +25,32 @@ module EngineCart
   end
 
   def self.fingerprint_current?
-    return false unless File.exist? stored_fingerprint_file
+
+    unless File.exist? stored_fingerprint_file
+      STDERR.puts "No finger print file found: #{stored_fingerprint_file}" if debug?
+      return false
+    end
     content = File.read(stored_fingerprint_file)
     data = JSON.parse(content, symbolize_names: true)
-    data == fingerprint
+    calculated = fingerprint
+
+    return true if data == calculated
+    if debug?
+      STDERR.puts "Fingerprint mismatch:\n\n"
+
+      data.keys.each do |key|
+        case data[key]
+        when Array
+          data[key].zip(calculated[key]).each do |(stored, calc)|
+            STDERR.puts("#{key}:\nstored: #{stored}\ncalculate: #{calc}") if stored != calc
+          end
+        else
+          STDERR.puts("#{key}:\nstored: #{data[key]}\ncalculate: #{calculated[key]}") if data[key] != calculated[key]
+        end
+      end
+    end
+
+    false
   rescue
     false
   end
@@ -69,7 +91,7 @@ module EngineCart
   end
 
   def self.env_fingerprint
-    { 'RUBY_DESCRIPTION' => RUBY_DESCRIPTION, 'BUNDLE_GEMFILE' => Bundler.default_gemfile.to_s }.reject { |k, v| v.nil? || v.empty? }.to_s
+    { RUBY_DESCRIPTION: RUBY_DESCRIPTION, BUNDLE_GEMFILE: Bundler.default_gemfile.to_s }.reject { |k, v| v.nil? || v.empty? }
   end
 
   def self.configuration(options = {})
@@ -91,5 +113,13 @@ module EngineCart
       Bundler.ui.warn "[EngineCart] For better results, consider updating the EngineCart stanza in your Gemfile with:\n\n"
       Bundler.ui.warn EngineCart.gemfile_stanza_text
     end
+  end
+
+  def self.debug=(debug)
+    @debug = debug
+  end
+
+  def self.debug?
+    @debug
   end
 end
