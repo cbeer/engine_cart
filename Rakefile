@@ -10,14 +10,20 @@ end
 
 task :generate_test_gem => ['engine_cart:setup'] do
   system("rm -rf .internal_test_gem")
-  gem 'rails'
+  gem 'rails', '5.2.3'
 
   rails_path = Gem.bin_path('railties', 'rails')
+  puts rails_path
 
-  Bundler.with_clean_env do
-    system("#{rails_path} plugin new internal_test_gem")
-  end
-  system("mv internal_test_gem .internal_test_gem")
+  require "rails/generators"
+  require "rails/generators/rails/plugin/plugin_generator"
+
+  pwd = Dir.pwd
+  Rails::Generators::PluginGenerator.start ['internal_test_gem']
+
+  Dir.chdir(pwd)
+
+  system("mv #{Dir.pwd}/internal_test_gem #{Dir.pwd}/.internal_test_gem")
 
   IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/FIXME/, "DONTCARE")})
   IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
