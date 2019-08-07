@@ -75,7 +75,7 @@ module EngineCart
 
   def self.fingerprinted_files
     Dir.glob("./*.gemspec").select { |f| File.file? f } +
-      [Bundler.default_gemfile.to_s, Bundler.default_lockfile.to_s] +
+      [Bundler.default_gemfile.to_s] +
       Dir.glob("./db/migrate/*").select { |f| File.file? f } +
       Dir.glob("./lib/generators/**/**").select { |f| File.file? f } +
       Dir.glob("./spec/test_app_templates/**/**").select { |f| File.file? f } +
