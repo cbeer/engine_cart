@@ -1,6 +1,6 @@
 module EngineCart
   def self.gemfile_stanza_check_line
-    "engine_cart stanza: 0.10.0"
+    'engine_cart stanza: 2.4.0'
   end
 
   def self.gemfile_stanza_text
@@ -27,15 +27,6 @@ module EngineCart
         else
           gem 'rails', ENV['RAILS_VERSION']
         end
-      end
-
-      case ENV['RAILS_VERSION']
-      when /^4\.2/
-        gem 'responders', '~> 2.0'
-        gem 'sass-rails', '>= 5.0'
-        gem 'coffee-rails', '~> 4.1.0'
-      when /^4\.[01]/
-        gem 'sass-rails', '< 5.0'
       end
     end
     # END ENGINE_CART BLOCK
