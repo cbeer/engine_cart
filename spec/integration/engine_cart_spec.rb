@@ -79,7 +79,7 @@ describe "EngineCart powered application" do
       File.open('spec/require_spec.rb', 'w') do |f|
         f.puts <<-EOF
           require 'spec_helper'
-          require 'coffee-rails'
+          require 'sqlite3'
 
           describe ApplicationController do
             it "should be able to run specs that reference gems provided by the test app" do
