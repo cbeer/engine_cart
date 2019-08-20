@@ -10,7 +10,7 @@ end
 
 task :generate_test_gem => ['engine_cart:setup'] do
   system("rm -rf .internal_test_gem")
-  gem 'rails', '5.2.3'
+  gem 'rails', ENV['RAILS_VERSION']
 
   rails_path = Gem.bin_path('railties', 'rails')
   puts rails_path
