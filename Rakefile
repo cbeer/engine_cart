@@ -10,7 +10,7 @@ end
 
 task :generate_test_gem => ['engine_cart:setup'] do
   system("rm -rf .internal_test_gem")
-  gem 'rails', '5.2.3'
+  gem 'rails', ENV['RAILS_VERSION']
 
   rails_path = Gem.bin_path('railties', 'rails')
   puts rails_path
@@ -50,10 +50,7 @@ task :generate_test_gem => ['engine_cart:setup'] do
     end
 
     system "echo '\ngem \"rspec-rails\"\n' >> Gemfile"
-    if Gem.loaded_specs["rails"].version.to_s < '4.2'
-      system %Q{echo '\ngem "sass", "~> 3.2.15"\n' >> Gemfile}
-      system %Q{echo '\ngem "sprockets", "~> 2.11.0"\n' >> Gemfile}
-    end
+
     Bundler.clean_system "bundle update --quiet"
     system "echo 'require \"engine_cart/rake_task\"\n' >> Rakefile"
 

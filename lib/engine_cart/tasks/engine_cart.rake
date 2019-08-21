@@ -67,22 +67,6 @@ namespace :engine_cart do
           text.gsub(/^gem ["']sqlite3["']$/, 'gem "sqlite3", "~> 1.3.0"')
         end)
       end
-
-      if Gem.loaded_specs["rails"].version.to_s < '4.2.4'
-        has_web_console = false
-
-        # Hack for https://github.com/rails/web-console/issues/150
-        gemfile = File.join(EngineCart.destination, 'Gemfile')
-        IO.write(gemfile, File.open(gemfile) do |f|
-          text = f.read
-          has_web_console = text.match('web-console')
-          text.gsub(/.*web-console.*/, "").gsub(/.*IRB console on exception pages.*/, "")
-        end)
-
-        File.open(gemfile, "a") do |f|
-          f.puts 'gem "web-console", group: :development'
-        end if has_web_console
-      end
     end
   end
 
