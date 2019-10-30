@@ -50,6 +50,7 @@ task :generate_test_gem => ['engine_cart:setup'] do
     end
 
     system "echo '\ngem \"rspec-rails\"\n' >> Gemfile"
+    system "echo '\ngem \"sass-rails\", \"~> 5.0\"\n' >> Gemfile" if ENV['RAILS_VERSION'] && ENV['RAILS_VERSION'] =~ /^5\./
 
     Bundler.clean_system "bundle update --quiet"
     system "echo 'require \"engine_cart/rake_task\"\n' >> Rakefile"
