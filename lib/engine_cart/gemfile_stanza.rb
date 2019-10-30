@@ -28,6 +28,11 @@ module EngineCart
           gem 'rails', ENV['RAILS_VERSION']
         end
       end
+      
+      case ENV['RAILS_VERSION']
+      when /^5./
+        gem 'sass-rails', '~> 5.0'
+      end
     end
     # END ENGINE_CART BLOCK
     EOF
