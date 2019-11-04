@@ -31,6 +31,29 @@ describe "EngineCart powered application" do
     end
   end
 
+  if ENV.fetch('RAILS_VERSION', 0).to_f >= 6.0
+    context "when JavaScript support is disabled" do
+      before do
+        FileUtils.mv(".engine_cart.yml", ".engine_cart.yml.disabled")
+        FileUtils.cp(".engine_cart.yml.disabled", ".engine_cart.yml")
+
+        config_file = open(".engine_cart.yml", "a")
+        config_file.write(" --skip-javascript")
+        config_file.close
+      end
+
+      after do
+        FileUtils.rm(".engine_cart.yml")
+        FileUtils.mv(".engine_cart.yml.disabled", ".engine_cart.yml")
+      end
+
+      it "should not insert webpacker tools" do
+        `bundle exec rake engine_cart:generate`
+        expect(File).not_to exist(".internal_test_app/bin/yarn")
+      end
+    end
+  end
+
   it "should not recreate an existing rails app when the engine_cart:generate task is reinvoked" do
     EngineCart.within_test_app do
       `bundle exec rake engine_cart:generate`
