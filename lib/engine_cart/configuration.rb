@@ -51,7 +51,11 @@ module EngineCart
     ##
     # Additional options when generating a test rails application
     def rails_options
-      Array(options[:rails_options])
+      rails_options_values = options.fetch(:rails_options)
+      return [] if rails_options_values.nil?
+
+      rails_options = parse_options(rails_options_values)
+      Array(rails_options)
     end
 
     def extra_fingerprinted_files

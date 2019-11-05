@@ -19,7 +19,17 @@ task :generate_test_gem => ['engine_cart:setup'] do
   require "rails/generators/rails/plugin/plugin_generator"
 
   pwd = Dir.pwd
-  Rails::Generators::PluginGenerator.start ['internal_test_gem']
+  generator_args = ['internal_test_gem']
+  generator_args << '--skip-javascript' if ENV.fetch('RAILS_VERSION', '') >= '6.0'
+
+  Rails::Generators::PluginGenerator.start generator_args
+
+  if Rails.version.to_f < 6.0 || Rails.version.to_f == 6.0
+    gemspec_file_path = "#{pwd}/internal_test_gem/.engine_cart.yml"
+    File.open(gemspec_file_path, 'w') do |f|
+      f.write('rails_options: "--skip-javascript"')
+    end
+  end
 
   Dir.chdir(pwd)
 
@@ -29,6 +39,14 @@ task :generate_test_gem => ['engine_cart:setup'] do
   IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
   IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/.*homepage.*/, "")})
   IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/.*sqlite3.*/, "")})
+
+  if Rails.version.to_f < 6.0 || Rails.version.to_f == 6.0
+    gemspec_file_path = ".internal_test_gem/internal_test_gem.gemspec"
+    IO.write(gemspec_file_path,
+             File.open(gemspec_file_path) { |f|
+                f.read.gsub(/(spec.add_dependency "rails".+$)/, "\\1\n  spec.add_dependency 'sprockets', '~> 3.7'")
+             })
+  end
 
   Rake::Task['engine_cart:inject_gemfile_extras'].invoke
   EngineCart.within_test_app do
@@ -56,6 +74,7 @@ task :generate_test_gem => ['engine_cart:setup'] do
 
     system("bundle exec rake engine_cart:prepare")
     Bundler.clean_system "bundle install --quiet"
+    system("bundle update --conservative sprockets")
   end
 end
 
