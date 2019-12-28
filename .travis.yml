@@ -4,5 +4,5 @@ rvm:
   - 2.6.3
 
 env:
- - "RAILS_VERSION=5.2.3"
- - "RAILS_VERSION=6.0.0"
+ - "RAILS_VERSION=5.2.4.1"
+ - "RAILS_VERSION=6.0.2.1"
