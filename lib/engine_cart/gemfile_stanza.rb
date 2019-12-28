@@ -26,6 +26,9 @@ module EngineCart
           ENV['ENGINE_CART_RAILS_OPTIONS'] = '--edge --skip-turbolinks'
         else
           gem 'rails', ENV['RAILS_VERSION']
+          
+          # Rails requires sprockets, but the Gemfile it generates has sass-rails 5, which requires sprockets < 4
+          gem 'sprockets', '< 4.0' if ENV['RAILS_VERSION'].start_with?('5')
         end
       end
     end
