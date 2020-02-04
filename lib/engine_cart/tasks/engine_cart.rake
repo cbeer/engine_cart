@@ -34,9 +34,7 @@ namespace :engine_cart do
           require 'rails/generators'
           require 'rails/generators/rails/app/app_generator'
 
-          # Using the Rails generator directly, instead of shelling out, to
-          # ensure we use the right version of Rails.
-          Rails::Generators::AppGenerator.start([
+          generator_parameters = [
             'internal',
             '--skip-git',
             '--skip-keeps',
@@ -47,7 +45,13 @@ namespace :engine_cart do
             '--skip-test',
             *EngineCart.rails_options,
             ("-m #{EngineCart.template}" if EngineCart.template)
-          ].compact)
+          ].compact.uniq
+
+          puts "EngineCart generated Rails app '#{EngineCart.destination}' with the following parameters: #{generator_parameters.inspect}"
+
+          # Using the Rails generator directly, instead of shelling out, to
+          # ensure we use the right version of Rails.
+          Rails::Generators::AppGenerator.start(generator_parameters)
         end
         exit 0
       end
