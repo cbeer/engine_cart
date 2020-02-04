@@ -78,7 +78,7 @@ module EngineCart
         destination: ENV['ENGINE_CART_DESTINATION'] || ENV['RAILS_ROOT'] || default_destination,
         template: ENV['ENGINE_CART_TEMPLATE'],
         templates_path: ENV['ENGINE_CART_TEMPLATES_PATH'] || './spec/test_app_templates',
-        rails_options: parse_options(ENV['ENGINE_CART_RAILS_OPTIONS']),
+        rails_options: Array(parse_options(ENV['ENGINE_CART_RAILS_OPTIONS'])),
         extra_fingerprinted_files: []
       }
     end
@@ -103,7 +103,13 @@ module EngineCart
     end
 
     def convert_keys(hash)
-      hash.each_with_object({}) { |(k, v), h| h[k.to_sym] = v }
+      hash.each_with_object({}) do |(k, v), h|
+        k_as_sym = k.to_sym
+        if k_as_sym == :rails_options
+          v = parse_options(v)
+        end
+        h[k_as_sym] = v
+      end
     end
 
     def default_configuration_paths
