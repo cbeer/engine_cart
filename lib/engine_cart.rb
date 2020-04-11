@@ -12,9 +12,21 @@ module EngineCart
     require File.expand_path("config/environment", path || EngineCart.destination)
   end
 
+  def self.with_unbundled_env
+    method = if Bundler.respond_to?(:with_unbundled_env)
+      :with_unbundled_env
+    else
+      :with_clean_env
+    end
+
+    Bundler.public_send(method) do
+      yield
+    end
+  end
+
   def self.within_test_app
     Dir.chdir(EngineCart.destination) do
-      Bundler.with_clean_env do
+      EngineCart.with_unbundled_env do
         yield
       end
     end
