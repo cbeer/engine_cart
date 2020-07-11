@@ -43,7 +43,6 @@ namespace :engine_cart do
             '--skip_spring',
             '--skip-bootsnap',
             '--skip-listen',
-            '--skip-bundle',
             '--skip-test',
             *EngineCart.rails_options,
             ("-m #{EngineCart.template}" if EngineCart.template)
