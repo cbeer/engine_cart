@@ -28,8 +28,8 @@ namespace :engine_cart do
     require 'tmpdir'
     require 'fileutils'
     Dir.mktmpdir do |dir|
-      # Fork into a new process to avoid polluting the current one with the partial Rails environment ...
-      pid = fork do
+      # Fork into a new thread to avoid polluting the current one with the partial Rails environment ...
+      thr = Thread.new do
         Dir.chdir dir do
           require 'rails/generators'
           require 'rails/generators/rails/app/app_generator'
@@ -49,12 +49,9 @@ namespace :engine_cart do
             ("-m #{EngineCart.template}" if EngineCart.template)
           ].compact)
         end
-        exit 0
       end
-
       # ... and then wait for it to catch up.
-      _, status = Process.waitpid2 pid
-      exit status.exitstatus unless status.success?
+      thr.join
 
       Rake::Task['engine_cart:clean'].invoke if File.exist? EngineCart.destination
       FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
