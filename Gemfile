@@ -4,4 +4,13 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rails', ENV['RAILS_VERSION'] if ENV['RAILS_VERSION']
-gem 'sprockets', '< 4.0' if ENV['RAILS_VERSION'] < '6'
+
+case ENV['RAILS_VERSION']
+when /^6.0/
+  gem 'sass-rails', '>= 6'
+  gem 'webpacker', '~> 4.0'
+when /^5.[12]/
+  gem 'sprockets', '< 4.0'
+  gem 'sass-rails', '~> 5.0'
+  gem 'thor', '~> 0.20'
+end
