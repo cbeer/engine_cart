@@ -1,8 +1,0 @@
-language: ruby
-sudo: false
-rvm:
-  - 2.6.3
-
-env:
- - "RAILS_VERSION=5.2.3"
- - "RAILS_VERSION=6.0.0"
