@@ -1,6 +1,6 @@
 module EngineCart
   def self.gemfile_stanza_check_line
-    'engine_cart stanza: 2.4.0'
+    'engine_cart stanza: 2.5.0'
   end
 
   def self.gemfile_stanza_text
@@ -26,6 +26,15 @@ module EngineCart
           ENV['ENGINE_CART_RAILS_OPTIONS'] = '--edge --skip-turbolinks'
         else
           gem 'rails', ENV['RAILS_VERSION']
+        end
+
+        case ENV['RAILS_VERSION']
+        when /^6.0/
+          gem 'sass-rails', '>= 6'
+          gem 'webpacker', '~> 4.0'
+        when /^5.[12]/
+          gem 'sass-rails', '~> 5.0'
+          gem 'thor', '~> 0.20'
         end
       end
     end
