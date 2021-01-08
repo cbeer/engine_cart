@@ -13,7 +13,6 @@ jobs:
       matrix:
         ruby:
           - 2.7
-          - 3.0
         rails_version:
           - 5.2.4.4
           - 6.0.3.4
