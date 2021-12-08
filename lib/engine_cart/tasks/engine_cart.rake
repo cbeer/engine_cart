@@ -34,6 +34,10 @@ namespace :engine_cart do
           require 'rails/generators'
           require 'rails/generators/rails/app/app_generator'
 
+          # Clear out our current bundle so that the rails generator can run with it's own bundle
+          backup_gemfile = ENV['BUNDLE_GEMFILE']
+          ENV.delete('BUNDLE_GEMFILE')
+
           # Using the Rails generator directly, instead of shelling out, to
           # ensure we use the right version of Rails.
           Rails::Generators::AppGenerator.start([
@@ -43,11 +47,14 @@ namespace :engine_cart do
             '--skip_spring',
             '--skip-bootsnap',
             '--skip-listen',
-            '--skip-bundle',
             '--skip-test',
             *EngineCart.rails_options,
             ("-m #{EngineCart.template}" if EngineCart.template)
           ].compact)
+
+          # Restore our gemfile
+          ENV['BUNDLE_GEMFILE'] = backup_gemfile
+
         end
         exit 0
       end
@@ -95,9 +102,6 @@ namespace :engine_cart do
 
       # Create a new test rails app
       Rake::Task['engine_cart:create_test_rails_app'].invoke
-
-      Bundler.clean_system "bundle install --quiet"
-
       Rake::Task['engine_cart:inject_gemfile_extras'].invoke
 
       # Copy our test app generators into the app and prepare it
