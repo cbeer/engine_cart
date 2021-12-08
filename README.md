@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/cbeer/engine_cart.svg?branch=master)](https://travis-ci.org/cbeer/engine_cart) [![Gem Version](https://badge.fury.io/rb/engine_cart.svg)](http://badge.fury.io/rb/engine_cart)
+[![Gem Version](https://badge.fury.io/rb/engine_cart.svg)](http://badge.fury.io/rb/engine_cart)
 
 # EngineCart
 
