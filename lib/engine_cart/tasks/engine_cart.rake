@@ -27,6 +27,8 @@ namespace :engine_cart do
   task :create_test_rails_app => [:setup] do
     require 'tmpdir'
     require 'fileutils'
+    require 'rails/version'
+
     Dir.mktmpdir do |dir|
       # Fork into a new process to avoid polluting the current one with the partial Rails environment ...
       pid = fork do
@@ -66,7 +68,7 @@ namespace :engine_cart do
       Rake::Task['engine_cart:clean'].invoke if File.exist? EngineCart.destination
       FileUtils.move "#{dir}/internal", "#{EngineCart.destination}"
 
-      if Gem.loaded_specs['rails'].version.to_s < '5.2.3'
+      if Rails.version < '5.2.3'
         # Hack for https://github.com/rails/rails/issues/35153
         gemfile = File.join(EngineCart.destination, 'Gemfile')
         IO.write(gemfile, File.open(gemfile) do |f|
