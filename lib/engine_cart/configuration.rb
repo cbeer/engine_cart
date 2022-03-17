@@ -1,5 +1,6 @@
 require 'yaml'
 require 'erb'
+require 'shellwords'
 
 module EngineCart
   class Configuration
@@ -86,10 +87,11 @@ module EngineCart
     # Split a string of options into individual options.
     # @example
     #   parse_options('--skip-foo --skip-bar -d postgres --skip-lala')
-    #   # => ["--skip-foo", "--skip-bar", "-d postgres", "--skip-lala"]
+    #   # => ["--skip-foo", "--skip-bar", "-d", "postgres", "--skip-lala"]
     def parse_options(options)
       return if options.nil?
-      options.scan(/(--[^\s]+|-[^\s]+\s+[^\s]+)/).flatten
+
+      Shellwords.shellwords(options)
     end
 
     def read_config(config_file)
