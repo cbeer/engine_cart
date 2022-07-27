@@ -25,12 +25,17 @@ task :generate_test_gem => ['engine_cart:setup'] do
 
   system("mv #{Dir.pwd}/internal_test_gem #{Dir.pwd}/.internal_test_gem")
 
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/FIXME/, "DONTCARE")})
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/TODO/, "DONTCARE")})
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/.*homepage.*/, "")})
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/.*sqlite3.*/, "")})
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/.*source_code_uri.*/, "")})
-  IO.write(".internal_test_gem/internal_test_gem.gemspec", File.open(".internal_test_gem/internal_test_gem.gemspec") {|f| f.read.gsub(/.*changelog_uri.*/, "")})
+  gemspec_data = File.open(".internal_test_gem/internal_test_gem.gemspec") do |f|
+    f.read.gsub(/FIXME/, "DONTCARE")
+          .gsub(/TODO/, "DONTCARE")
+          .gsub(/.*homepage.*/, "")
+          .gsub(/.*sqlite3.*/, "")
+          .gsub(/.*source_code_uri.*/, "")
+          .gsub(/.*changelog_uri.*/, "")
+  end
+
+  IO.write(".internal_test_gem/internal_test_gem.gemspec", gemspec_data)
+  IO.write(".internal_test_gem/Gemfile", File.open(".internal_test_gem/Gemfile") {|f| f.read.gsub(/.*sqlite3.*/, "")})
 
   Rake::Task['engine_cart:inject_gemfile_extras'].invoke
   EngineCart.within_test_app do
