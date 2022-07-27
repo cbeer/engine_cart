@@ -112,7 +112,8 @@ namespace :engine_cart do
       within_test_app do
         unless (system("bundle install --quiet") or system("bundle update --quiet")) and
               system "(bundle exec rails g | grep test_app) && bundle exec rails generate test_app" and
-              system "bundle exec rake db:migrate db:test:prepare"
+              system "bundle exec rake db:migrate" and
+              system "bundle exec rake db:test:prepare"
           raise "EngineCart failed on with: #{$?}"
         end
       end
