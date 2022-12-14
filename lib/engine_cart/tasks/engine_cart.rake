@@ -111,9 +111,9 @@ namespace :engine_cart do
 
       within_test_app do
         unless (system("bundle install --quiet") or system("bundle update --quiet")) and
-              system "(bundle exec rails g | grep test_app) && bundle exec rails generate test_app" and
-              system "bundle exec rake db:migrate" and
-              system "bundle exec rake db:test:prepare"
+              system "(bin/rails g | grep test_app) && bin/rails generate test_app" and
+              system "bin/rails db:migrate" and
+              system "bin/rails db:test:prepare"
           raise "EngineCart failed on with: #{$?}"
         end
       end
@@ -129,14 +129,14 @@ namespace :engine_cart do
   desc 'Start the internal test application using `rails server`'
   task :server, [:rails_server_args] => [:generate] do |_, args|
     within_test_app do
-      system "bundle exec rails server #{args[:rails_server_args]}"
+      system "bin/rails server #{args[:rails_server_args]}"
     end
   end
 
   desc 'Start the internal test application using `rails console`'
   task :console, [:rails_console_args] => [:generate] do |_, args|
     within_test_app do
-      system "bundle exec rails console #{args[:rails_console_args]}"
+      system "bin/rails console #{args[:rails_console_args]}"
     end
   end
 end
