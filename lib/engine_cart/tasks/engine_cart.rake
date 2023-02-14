@@ -144,7 +144,7 @@ end
 def within_test_app
   puts "\rtravis_fold:start:enginecart-bundler-cleanenv\r" if ENV['TRAVIS'] == 'true'
   Dir.chdir(EngineCart.destination) do
-    Bundler.with_clean_env do
+    EngineCart.with_unbundled_env do
       yield
     end
   end
