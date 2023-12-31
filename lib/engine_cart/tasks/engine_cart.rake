@@ -117,7 +117,7 @@ namespace :engine_cart do
 
       # Copy our test app generators into the app and prepare it
       if File.exist? "#{EngineCart.templates_path}/lib/generators"
-        Bundler.clean_system "cp -r #{EngineCart.templates_path}/lib/generators #{EngineCart.destination}/lib"
+        Bundler.unbundled_system "cp -r #{EngineCart.templates_path}/lib/generators #{EngineCart.destination}/lib"
       end
 
       within_test_app do
@@ -129,7 +129,7 @@ namespace :engine_cart do
         end
       end
 
-      Bundler.clean_system "bundle install --quiet"
+      Bundler.unbundled_system "bundle install --quiet"
 
       EngineCart.write_fingerprint
 
