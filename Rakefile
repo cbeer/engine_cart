@@ -61,11 +61,11 @@ task :generate_test_gem => ['engine_cart:setup'] do
       system "echo '\ngem \"sqlite3\", \"< 1.7.0\"\n' >> Gemfile"
     end
 
-    Bundler.clean_system "bundle update --quiet"
+    Bundler.unbundled_system "bundle update --quiet"
     system "echo 'require \"engine_cart/rake_task\"\n' >> Rakefile"
 
     system("bundle exec rake engine_cart:prepare")
-    Bundler.clean_system "bundle install --quiet"
+    Bundler.unbundled_system "bundle install --quiet"
   end
 end
 
