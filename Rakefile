@@ -57,6 +57,9 @@ task :generate_test_gem => ['engine_cart:setup'] do
     end
 
     system "echo '\ngem \"rspec-rails\"\n' >> Gemfile"
+    if RUBY_VERSION < '3.0'
+      system "echo '\ngem \"sqlite3\", \"< 1.7.0\"\n' >> Gemfile"
+    end
 
     Bundler.clean_system "bundle update --quiet"
     system "echo 'require \"engine_cart/rake_task\"\n' >> Rakefile"

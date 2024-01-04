@@ -76,6 +76,15 @@ namespace :engine_cart do
           text.gsub(/^gem ["']sqlite3["']$/, 'gem "sqlite3", "~> 1.3.0"')
         end)
       end
+
+      if RUBY_VERSION < '3.0'
+        # Hack for https://github.com/cbeer/engine_cart/issues/125
+        gemfile = File.join(EngineCart.destination, 'Gemfile')
+        IO.write(gemfile, File.open(gemfile) do |f|
+          text = f.read
+          text.gsub(/^gem ["']sqlite3["']$/, 'gem "sqlite3", "< 1.7"')
+        end)
+      end
     end
   end
 
