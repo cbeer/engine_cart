@@ -111,7 +111,7 @@ namespace :engine_cart do
       end
 
       within_test_app do
-        unless (system("bundle install --quiet") or system("bundle update --quiet")) and
+        unless (system("bundle install --quiet") or system("bundle update --all --quiet")) and
               system "(bin/rails g | grep test_app) && bin/rails generate test_app" and
               system "bin/rails db:migrate" and
               system "bin/rails db:test:prepare"
