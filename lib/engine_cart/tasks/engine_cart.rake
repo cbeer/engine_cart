@@ -41,6 +41,7 @@ namespace :engine_cart do
 
           # Using the Rails generator directly, instead of shelling out, to
           # ensure we use the right version of Rails.
+          # See https://jacopretorius.net/2025/05/all-rails-new-options.html
           Rails::Generators::AppGenerator.start([
             'internal',
             '--skip-git',
@@ -49,6 +50,8 @@ namespace :engine_cart do
             '--skip-bootsnap',
             '--skip-listen',
             '--skip-test',
+            '--skip-thruster',
+            '--skip-dev-gems',
             *EngineCart.rails_options,
             ("-m #{EngineCart.template}" if EngineCart.template)
           ].compact)
