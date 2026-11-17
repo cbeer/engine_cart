@@ -78,6 +78,7 @@ describe "EngineCart powered application" do
         EOF
       end
 
+      `bundle exec rake engine_cart:generate`
       `bundle exec rspec spec/some_spec.rb`
       expect($?).to eq 0
     end
@@ -99,6 +100,7 @@ describe "EngineCart powered application" do
         EOF
       end
 
+      `bundle exec rake engine_cart:generate`
       `bundle exec rspec spec/require_spec.rb`
       expect($?).to eq 0
     end
