@@ -31,6 +31,15 @@ describe "EngineCart powered application" do
     end
   end
 
+  it "should run the rails app generator's bundled installers when the engine_cart:generate task is invoked" do
+    EngineCart.within_test_app do
+      FileUtils.rm_rf('.internal_test_app')
+      output = `bundle exec rake engine_cart:generate 2>&1`
+      expect(output).not_to include('Bundler::GemNotFound')
+      expect(File).to exist(File.expand_path('.internal_test_app/config/importmap.rb'))
+    end
+  end
+
   it "should not recreate an existing rails app when the engine_cart:generate task is reinvoked" do
     EngineCart.within_test_app do
       `bundle exec rake engine_cart:generate`
@@ -69,6 +78,7 @@ describe "EngineCart powered application" do
         EOF
       end
 
+      `bundle exec rake engine_cart:generate`
       `bundle exec rspec spec/some_spec.rb`
       expect($?).to eq 0
     end
@@ -90,6 +100,7 @@ describe "EngineCart powered application" do
         EOF
       end
 
+      `bundle exec rake engine_cart:generate`
       `bundle exec rspec spec/require_spec.rb`
       expect($?).to eq 0
     end

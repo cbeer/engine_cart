@@ -38,6 +38,7 @@ namespace :engine_cart do
           # Clear out our current bundle so that the rails generator can run with it's own bundle
           backup_gemfile = ENV['BUNDLE_GEMFILE']
           ENV.delete('BUNDLE_GEMFILE')
+          backup_lockfile = ENV.delete('BUNDLE_LOCKFILE')
 
           # Using the Rails generator directly, instead of shelling out, to
           # ensure we use the right version of Rails.
@@ -55,6 +56,7 @@ namespace :engine_cart do
 
           # Restore our gemfile
           ENV['BUNDLE_GEMFILE'] = backup_gemfile
+          ENV['BUNDLE_LOCKFILE'] = backup_lockfile
 
         end
         exit 0

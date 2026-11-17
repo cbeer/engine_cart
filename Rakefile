@@ -35,7 +35,7 @@ task :generate_test_gem => ['engine_cart:setup'] do
   end
 
   IO.write(".internal_test_gem/internal_test_gem.gemspec", gemspec_data)
-  IO.write(".internal_test_gem/Gemfile", File.open(".internal_test_gem/Gemfile") {|f| f.read.gsub(/.*sqlite3.*/, "")})
+  IO.write(".internal_test_gem/Gemfile", File.open(".internal_test_gem/Gemfile") {|f| f.read.gsub(/.*sqlite3.*/, "").gsub(/.*puma.*/, "")})
 
   Rake::Task['engine_cart:inject_gemfile_extras'].invoke
   EngineCart.within_test_app do
@@ -52,6 +52,18 @@ task :generate_test_gem => ['engine_cart:setup'] do
         require 'internal_test_gem'
         RSpec.configure do |config|
 
+        end
+      EOF
+    end
+
+    FileUtils.mkdir_p('lib/generators/internal_test_gem')
+    File.open('lib/generators/internal_test_gem/install_generator.rb', 'w') do |f|
+      f.puts <<-EOF
+        require 'rails/generators'
+
+        module InternalTestGem
+          class InstallGenerator < Rails::Generators::Base
+          end
         end
       EOF
     end
