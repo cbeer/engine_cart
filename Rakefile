@@ -56,6 +56,18 @@ task :generate_test_gem => ['engine_cart:setup'] do
       EOF
     end
 
+    FileUtils.mkdir_p('lib/generators/internal_test_gem')
+    File.open('lib/generators/internal_test_gem/install_generator.rb', 'w') do |f|
+      f.puts <<-EOF
+        require 'rails/generators'
+
+        module InternalTestGem
+          class InstallGenerator < Rails::Generators::Base
+          end
+        end
+      EOF
+    end
+
     system "echo '\ngem \"rspec-rails\"\n' >> Gemfile"
     if RUBY_VERSION < '3.0'
       system "echo '\ngem \"sqlite3\", \"< 1.7.0\"\n' >> Gemfile"
