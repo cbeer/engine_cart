@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe "EngineCart powered application" do
+  before do
+    FileUtils.rm_rf("#{EngineCart.destination}/Gemfile.lock")
+  end
+
   it "should have the test_app_templates pre-generated" do
     expect(File).to exist File.expand_path("spec/test_app_templates", EngineCart.destination)
   end
